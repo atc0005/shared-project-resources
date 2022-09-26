@@ -46,11 +46,15 @@ jobs:
       - name: Run Go linting tools using project Makefile
         run: make linting
 
-  build_code_with_makefile:
-    name: Build codebase using Makefile
+  build_code_with_makefile_all_recipe:
+    name: Build codebase using Makefile all recipe
     runs-on: ubuntu-latest
     # Default: 360 minutes
-    timeout-minutes: 10
+    #
+    # The check-vmware project requires more time than the others, so we use
+    # that projects build time as the max runtime for this workflow for all
+    # projects.
+    timeout-minutes: 55
     container:
       # Use (lightly touched) mirror of current "vanilla" upstream golang image
       image: "ghcr.io/atc0005/go-ci:go-ci-stable-mirror-build"
