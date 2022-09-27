@@ -7,6 +7,10 @@
 
 on:
   workflow_call:
+    inputs:
+      gogeninstall:
+        required: false
+        type: boolean
 
 jobs:
   lint_code_with_makefile:
@@ -63,12 +67,24 @@ jobs:
       - name: Print go version
         run: go version
 
-      - name: Check out code into the Go module directory
+      - name: Check out code into the Go module directory (single commit)
+        if: ${{ inputs.gogeninstall == 'false' }}
         uses: actions/checkout@v3.0.2
+
+      - name: Check out code into the Go module directory (full history)
+        if: ${{ inputs.gogeninstall }}
+        uses: actions/checkout@v3.0.2
+        with:
+          # Needed in order to retrieve tags for use with go generate
+          fetch-depth: 0
 
       # bsdmainutils provides "column" which is used by the Makefile
       - name: Install Ubuntu packages
         run: apt-get update && apt-get install -y --no-install-recommends make gcc bsdmainutils
+
+      - name: Install go generate dependencies (if requested)
+        if: ${{ inputs.gogeninstall }}
+        run: make gogeninstall
 
       - name: Build using project Makefile
         run: make all
