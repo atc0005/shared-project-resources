@@ -68,7 +68,7 @@ jobs:
         run: go version
 
       - name: Check out code into the Go module directory (single commit)
-        if: inputs.gogeninstall == 'false'
+        if: inputs.gogeninstall == false
         uses: actions/checkout@v3.0.2
 
       - name: Check out code into the Go module directory (full history)
