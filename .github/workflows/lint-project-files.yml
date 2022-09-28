@@ -55,8 +55,8 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3.0.2
 
-      - name: Run hadolint against project canary Dockerfile (if present)
-        if: hashFiles('dependabot/docker/go/Dockerfile') != ''
+      - name: Run hadolint against any Dockerfiles
+        if: hashFiles('Dockerfile') != ''
         run: |
           hadolint --version
-          hadolint dependabot/docker/go/Dockerfile
+          find  . -name "Dockerfile" -print -exec hadolint {} \;
