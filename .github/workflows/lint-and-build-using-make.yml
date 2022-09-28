@@ -68,11 +68,11 @@ jobs:
         run: go version
 
       - name: Check out code into the Go module directory (single commit)
-        if: ${{ inputs.gogeninstall == 'false' }}
+        if: inputs.gogeninstall == 'false'
         uses: actions/checkout@v3.0.2
 
       - name: Check out code into the Go module directory (full history)
-        if: ${{ inputs.gogeninstall }}
+        if: inputs.gogeninstall
         uses: actions/checkout@v3.0.2
         with:
           # Needed in order to retrieve tags for use with go generate
@@ -83,7 +83,7 @@ jobs:
         run: apt-get update && apt-get install -y --no-install-recommends make gcc bsdmainutils
 
       - name: Install go generate dependencies (if requested)
-        if: ${{ inputs.gogeninstall }}
+        if: inputs.gogeninstall
         run: make gogeninstall
 
       - name: Build using project Makefile
