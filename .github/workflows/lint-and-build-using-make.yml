@@ -8,6 +8,9 @@
 on:
   workflow_call:
     inputs:
+      os-dependencies:
+        required: false
+        type: string
       gogeninstall:
         required: false
         type: boolean
@@ -78,9 +81,14 @@ jobs:
           # Needed in order to retrieve tags for use with go generate
           fetch-depth: 0
 
-      # bsdmainutils provides "column" which is used by the Makefile
-      - name: Install Ubuntu packages
+      - name: Install Ubuntu packages (standard set)
+        if: ${{ inputs.os-dependencies == '' }}
+        # bsdmainutils provides "column" which is used by the Makefile
         run: apt-get update && apt-get install -y --no-install-recommends make gcc bsdmainutils
+
+      - name: Install Ubuntu packages (custom set)
+        if: ${{ inputs.os-dependencies != '' }}
+        run: apt-get update && apt-get install -y --no-install-recommends ${{ inputs.os-dependencies }}
 
       - name: Install go generate dependencies (if requested)
         if: inputs.gogeninstall
