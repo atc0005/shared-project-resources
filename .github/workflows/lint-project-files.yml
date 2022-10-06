@@ -31,7 +31,7 @@ jobs:
           echo "markdownlint version: $(markdownlint --version)"
 
       - name: Check out code
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v3.1.0
 
       - name: Run Markdown linting tools
         # The `.markdownlint.yml` file specifies config settings for this
@@ -53,7 +53,7 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v3.1.0
 
       - name: Run hadolint against any Dockerfiles
         if: hashFiles('**/Dockerfile') != ''
