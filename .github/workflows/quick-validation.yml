@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v3.1.0
 
       - name: Remove repo-provided golangci-lint config file
         run: |
@@ -44,7 +44,7 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v3.1.0
 
       - name: go mod tidy
         run: |
