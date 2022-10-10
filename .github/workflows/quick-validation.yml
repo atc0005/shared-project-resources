@@ -55,3 +55,32 @@ jobs:
         run: |
           go mod vendor
           git diff --exit-code
+
+  go_get_update_changes:
+    name: Look for available minor or patch releases
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    container:
+      image: ghcr.io/atc0005/go-ci:go-ci-lint-only
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3.0.2
+
+      # Provided for contrast. Will likely remove this one at some point.
+      - name: go list
+        run: |
+          go list -mod=mod -u -f '{{if .Update}}{{.Path}}: {{.Version}} -> {{.Update.Version}} ({{.Update.Time}}){{end}}' -m all
+          # go list -mod=mod -u -m all
+          # go list -mod=mod -u -json -m all
+
+      - name: go get
+        run: |
+          go get -u ./...
+          go mod tidy
+          git diff --exit-code go.???
+
+      # - name: go mod vendor
+      #   run: |
+      #     go mod vendor
+      #     git diff --exit-code
