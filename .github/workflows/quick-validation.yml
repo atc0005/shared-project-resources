@@ -59,6 +59,9 @@ jobs:
   go_get_update_changes:
     name: Look for available minor or patch releases
     runs-on: ubuntu-latest
+
+    # Mark just this one job as failed, not the whole workflow.
+    continue-on-error: true
     timeout-minutes: 10
     container:
       image: ghcr.io/atc0005/go-ci:go-ci-lint-only
