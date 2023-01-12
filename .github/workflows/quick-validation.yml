@@ -35,55 +35,10 @@ jobs:
       - name: Run all tests
         run: go test -mod=vendor -v ./...
 
-  go_mod_changes:
-    name: Look for uncommitted Go module changes
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    container:
-      image: ghcr.io/atc0005/go-ci:go-ci-lint-only
+  go_mod_validation:
+    name: Go Module Validation
+    uses: atc0005/shared-project-resources/.github/workflows/go-mod-validation.yml@master
 
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3.3.0
-
-      - name: go mod tidy
-        run: |
-          go mod tidy
-          git diff --exit-code go.mod
-
-      - name: go mod vendor
-        run: |
-          go mod vendor
-          git diff --exit-code
-
-  go_get_update_changes:
-    name: Look for available minor or patch releases
-    runs-on: ubuntu-latest
-
-    # Mark just this one job as failed, not the whole workflow.
-    continue-on-error: true
-    timeout-minutes: 10
-    container:
-      image: ghcr.io/atc0005/go-ci:go-ci-lint-only
-
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3.3.0
-
-      # Provided for contrast. Will likely remove this one at some point.
-      - name: go list
-        run: |
-          go list -mod=mod -u -f '{{if .Update}}{{.Path}}: {{.Version}} -> {{.Update.Version}} ({{.Update.Time}}){{end}}' -m all
-          # go list -mod=mod -u -m all
-          # go list -mod=mod -u -json -m all
-
-      - name: go get
-        run: |
-          go get -u ./...
-          go mod tidy
-          git diff --exit-code go.???
-
-      # - name: go mod vendor
-      #   run: |
-      #     go mod vendor
-      #     git diff --exit-code
+  dependency_updates:
+    name: Dependency Updates
+    uses: atc0005/shared-project-resources/.github/workflows/dependency-updates.yml@master

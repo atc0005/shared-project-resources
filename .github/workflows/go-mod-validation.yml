@@ -1,0 +1,42 @@
+# Copyright 2022 Adam Chalkley
+#
+# https://github.com/atc0005/shared-project-resources
+#
+# Licensed under the MIT License. See LICENSE file in the project root for
+# full license information.
+
+on:
+  workflow_call:
+
+jobs:
+  go_mod_changes:
+    name: Look for missing go.mod changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    container:
+      image: ghcr.io/atc0005/go-ci:go-ci-lint-only
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3.3.0
+
+      - name: go mod tidy
+        run: |
+          go mod tidy -v
+          git diff --exit-code go.mod
+
+  go_mod_vendor:
+    name: Look for missing vendored dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    container:
+      image: ghcr.io/atc0005/go-ci:go-ci-lint-only
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3.3.0
+
+      - name: go mod vendor
+        run: |
+          go mod vendor
+          git diff --exit-code
