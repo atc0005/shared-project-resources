@@ -84,7 +84,7 @@ jobs:
       - name: Install Ubuntu packages (standard set)
         if: ${{ inputs.os-dependencies == '' }}
         # bsdmainutils provides "column" which is used by the Makefile
-        run: apt-get update && apt-get install -y --no-install-recommends make gcc bsdmainutils
+        run: apt-get update && apt-get install -y --no-install-recommends make gcc bsdmainutils xz-utils
 
       - name: Install Ubuntu packages (custom set)
         if: ${{ inputs.os-dependencies != '' }}
