@@ -23,7 +23,7 @@ jobs:
     timeout-minutes: 10
     container:
       # Use (lightly touched) mirror of current "vanilla" upstream golang image
-      image: "ghcr.io/atc0005/go-ci:go-ci-stable-mirror-build"
+      image: "ghcr.io/atc0005/go-ci:go-ci-stable-mirror-build-v0.7.9-0-gdf9564d3"
 
     steps:
       - name: Print go version
@@ -64,7 +64,7 @@ jobs:
     timeout-minutes: 55
     container:
       # Use (lightly touched) mirror of current "vanilla" upstream golang image
-      image: "ghcr.io/atc0005/go-ci:go-ci-stable-mirror-build"
+      image: "ghcr.io/atc0005/go-ci:go-ci-stable-mirror-build-v0.7.9-0-gdf9564d3"
 
     steps:
       - name: Print go version
