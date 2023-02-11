@@ -42,7 +42,7 @@ jobs:
           - container-image: "go-ci-unstable"
             experimental: true
     container:
-      image: "ghcr.io/atc0005/go-ci:${{ matrix.container-image}}-$GO_CI_IMG_RELEASE_VER"
+      image: "ghcr.io/atc0005/go-ci:${{ matrix.container-image}}-${{ vars.GO_CI_IMG_RELEASE_VER }}"
 
     steps:
       - name: Check out code
@@ -88,7 +88,7 @@ jobs:
         container-image: ["go-ci-oldstable", "go-ci-stable", "go-ci-unstable"]
 
     container:
-      image: "ghcr.io/atc0005/go-ci:${{ matrix.container-image}}-$GO_CI_IMG_RELEASE_VER"
+      image: "ghcr.io/atc0005/go-ci:${{ matrix.container-image}}-${{ vars.GO_CI_IMG_RELEASE_VER }}"
 
     steps:
       - name: Check out code
@@ -118,7 +118,7 @@ jobs:
         container-image: ["go-ci-oldstable", "go-ci-stable", "go-ci-unstable"]
 
     container:
-      image: "ghcr.io/atc0005/go-ci:${{ matrix.container-image}}-$GO_CI_IMG_RELEASE_VER"
+      image: "ghcr.io/atc0005/go-ci:${{ matrix.container-image}}-${{ vars.GO_CI_IMG_RELEASE_VER }}"
 
     steps:
       - name: Print go version
