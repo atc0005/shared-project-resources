@@ -32,7 +32,7 @@ jobs:
     continue-on-error: true
     timeout-minutes: 10
     container:
-      image: "ghcr.io/atc0005/go-ci:go-ci-lint-only-${{ env.GO_CI_IMG_RELEASE_VER }}"
+      image: "ghcr.io/atc0005/go-ci:go-ci-lint-only-$GO_CI_IMG_RELEASE_VER"
 
     steps:
       - name: Check out code
