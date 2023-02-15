@@ -9,47 +9,24 @@ on:
   workflow_call:
 
 jobs:
+  # Keep same job id and name for the time being in case projects are still
+  # configured to expect these specific values.
   lint_and_test_code:
     name: Lint and test using latest stable container
+
+    # We're going to execute directly on the CI runner environment instead
+    # of a container as we were before.
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    container:
-      image: "ghcr.io/atc0005/go-ci:go-ci-lint-only"
+
+    # It should not take longer than 5 minutes to run; realistically, one
+    # minute is more than sufficient assuming that the timer starts when the
+    # job is actually running (and not when the CI job is still pending an
+    # available runner).
+    timeout-minutes: 5
 
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3.3.0
-
-      # Mark the current working directory as a safe directory in git to
-      # resolve "dubious ownership" complaints.
-      #
-      # https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
-      # https://confluence.atlassian.com/bbkb/git-command-returns-fatal-error-about-the-repository-being-owned-by-someone-else-1167744132.html
-      # https://github.com/actions/runner-images/issues/6775
-      # https://github.com/actions/checkout/issues/766
-      - name: Mark the current working directory as a safe directory in git
-        # run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
-        run: git config --global --add safe.directory "${PWD}"
-
-      - name: Remove repo-provided golangci-lint config file
+      - name: Fail CI for dependent workflows
         run: |
-          # Remove the copy of the config file bundled with the repo/code so
-          # that the configuration provided by the atc0005/go-ci project is
-          # used instead
-          rm -vf .golangci.yml
-
-      - name: Run golangci-lint using container-provided config file settings
-        run: |
-          golangci-lint --version
-          golangci-lint run
-
-      - name: Run all tests
-        run: go test -mod=vendor -v ./...
-
-  go_mod_validation:
-    name: Go Module Validation
-    uses: atc0005/shared-project-resources/.github/workflows/go-mod-validation.yml@master
-
-  dependency_updates:
-    name: Dependency Updates
-    uses: atc0005/shared-project-resources/.github/workflows/dependency-updates.yml@master
+          echo "This importable workflow is deprecated and will be removed soon."
+          echo "See https://github.com/atc0005/shared-project-resources/issues/63 for details."
+          exit 1
