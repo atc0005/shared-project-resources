@@ -68,10 +68,19 @@ jobs:
     name: Run tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # Don't flag the whole workflow as failed if "experimental" matrix jobs
+    # fail. This allows unstable image tests to fail without marking the
+    # oldstable and stable image jobs as failed.
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
+      # Don't stop all workflow jobs if the unstable image tests fail.
+      fail-fast: false
       matrix:
-        container-image: ["go-ci-oldstable", "go-ci-stable", "go-ci-unstable"]
-
+        container-image: ["go-ci-oldstable", "go-ci-stable"]
+        experimental: [false]
+        include:
+          - container-image: "go-ci-unstable"
+            experimental: true
     container:
       image: "ghcr.io/atc0005/go-ci:${{ matrix.container-image}}"
 
@@ -98,10 +107,19 @@ jobs:
     runs-on: ubuntu-latest
     # Default: 360 minutes
     timeout-minutes: 10
+    # Don't flag the whole workflow as failed if "experimental" matrix jobs
+    # fail. This allows unstable image build tasks to fail without marking the
+    # oldstable and stable image jobs as failed.
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
+      # Don't stop all workflow jobs if the unstable image build tasks fail.
+      fail-fast: false
       matrix:
-        container-image: ["go-ci-oldstable", "go-ci-stable", "go-ci-unstable"]
-
+        container-image: ["go-ci-oldstable", "go-ci-stable"]
+        experimental: [false]
+        include:
+          - container-image: "go-ci-unstable"
+            experimental: true
     container:
       image: "ghcr.io/atc0005/go-ci:${{ matrix.container-image}}"
 
