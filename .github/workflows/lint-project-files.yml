@@ -10,21 +10,6 @@ on:
     types: [opened, synchronize]
   workflow_call:
 
-# https://docs.github.com/en/actions/learn-github-actions/variables#defining-environment-variables-for-a-single-workflow
-env:
-  # https://github.com/atc0005/go-ci/issues/848
-  #
-  # Confirmed working:
-  # GO_CI_IMG_RELEASE_VER: "v0.7.9-0-gdf9564d3"
-  #
-  # Without workarounds will fail (git package security updates):
-  # GO_CI_IMG_RELEASE_VER: "v0.7.10-0-gcc0a2418"
-  #
-  # Use latest atc0005/go-ci image releases, trusting that workarounds applied
-  # in this workflow are sufficient to resolve any issues not handled in the
-  # image itself:
-  GO_CI_IMG_RELEASE_VER: "latest"
-
 jobs:
   lint_markdown:
     name: Lint Markdown files
