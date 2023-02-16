@@ -1,0 +1,36 @@
+# Copyright 2023 Adam Chalkley
+#
+# https://github.com/atc0005/shared-project-resources
+#
+# Licensed under the MIT License. See LICENSE file in the project root for
+# full license information.
+
+# Purpose: This importable workflow is intended to act as a wrapper or bucket
+# for tasks that are run on a monthly schedule. This can be used to run jobs
+# that are more intensive/expensive than would be warranted to run on every
+# pull request or a more frequent (e.g., weekly) schedule.
+
+on:
+  workflow_call:
+    # Default for all inputs is off/false, but overridable from the calling
+    # workflow.
+    inputs:
+      os-dependencies:
+        required: false
+        type: string
+      gogeninstall:
+        required: false
+        type: boolean
+
+jobs:
+  lint_and_build_using_ci_matrix:
+    name: CI matrix
+    uses: atc0005/shared-project-resources/.github/workflows/lint-and-build-using-ci-matrix.yml@master
+
+  lint_and_build_using_makefile:
+    name: Makefile
+    with:
+      # Pass on any values specified by the importing workflow.
+      os-dependencies: ${{ inputs.os-dependencies }}
+      gogeninstall: ${{ inputs.gogeninstall }}
+    uses: atc0005/shared-project-resources/.github/workflows/lint-and-build-using-make.yml@master
