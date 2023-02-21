@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     container:
-      image: "ghcr.io/atc0005/go-ci:go-ci-lint-only"
+      image: "ghcr.io/atc0005/go-ci:go-ci-stable-mirror-build"
 
     steps:
       - name: Check out code
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     container:
-      image: "ghcr.io/atc0005/go-ci:go-ci-lint-only"
+      image: "ghcr.io/atc0005/go-ci:go-ci-stable-mirror-build"
 
     steps:
       - name: Check out code

@@ -64,6 +64,8 @@ jobs:
       - name: Run Go linting tools using project Makefile
         run: make linting
 
+  # TODO: Move this to the scheduled-monthly.yml file *after* a sufficient
+  # number of projects have been updated to provide a `quick` Makefile recipe.
   build_code_with_makefile_all_recipe:
     name: Build codebase using Makefile all recipe
     runs-on: ubuntu-latest
