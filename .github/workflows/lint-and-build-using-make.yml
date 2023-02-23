@@ -16,9 +16,6 @@ on:
       gogeninstall:
         required: false
         type: boolean
-      depsinstall:
-        required: false
-        type: boolean
 
 jobs:
   lint_code_with_makefile:
@@ -123,9 +120,13 @@ jobs:
           echo "See https://github.com/atc0005/shared-project-resources/issues/71 for details."
           exit 1
 
-      - name: Install build dependencies (if requested)
+      # Try to install build dependencies using the depsinstall Makefile
+      # recipe but allow this step to fail without failing the whole job if
+      # the recipe is not yet implemented by a project's Makfile.
+      - name: Install build dependencies (try)
         if: inputs.depsinstall
         run: make depsinstall
+        continue-on-error: true
 
       - name: Build using project Makefile
         run: make all
