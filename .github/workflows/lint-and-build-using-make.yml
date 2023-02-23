@@ -11,7 +11,12 @@ on:
       os-dependencies:
         required: false
         type: string
+      # Deprecated input.
+      # https://github.com/atc0005/shared-project-resources/issues/71
       gogeninstall:
+        required: false
+        type: boolean
+      depsinstall:
         required: false
         type: boolean
 
@@ -83,15 +88,11 @@ jobs:
       - name: Print go version
         run: go version
 
-      - name: Check out code into the Go module directory (single commit)
-        if: inputs.gogeninstall == false
-        uses: actions/checkout@v3.3.0
-
-      - name: Check out code into the Go module directory (full history)
-        if: inputs.gogeninstall
+      - name: Check out code (full history)
         uses: actions/checkout@v3.3.0
         with:
-          # Needed in order to retrieve tags for use with go generate
+          # Full history is needed to allow listing tags via build tooling
+          # (e.g., go-winres, git-describe-semver)
           fetch-depth: 0
 
       # Mark the current working directory as a safe directory in git to
@@ -114,9 +115,17 @@ jobs:
         if: ${{ inputs.os-dependencies != '' }}
         run: apt-get update && apt-get install -y --no-install-recommends ${{ inputs.os-dependencies }}
 
+      # DEPRECATED; replacing with depsinstall Makefile recipe (broader scope)
       - name: Install go generate dependencies (if requested)
         if: inputs.gogeninstall
-        run: make gogeninstall
+        run: |
+          echo "The gogeninstall input is deprecated and will be removed soon."
+          echo "See https://github.com/atc0005/shared-project-resources/issues/71 for details."
+          exit 1
+
+      - name: Install build dependencies (if requested)
+        if: inputs.depsinstall
+        run: make depsinstall
 
       - name: Build using project Makefile
         run: make all
