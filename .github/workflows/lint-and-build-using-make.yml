@@ -124,7 +124,6 @@ jobs:
       # recipe but allow this step to fail without failing the whole job if
       # the recipe is not yet implemented by a project's Makfile.
       - name: Install build dependencies (try)
-        if: inputs.depsinstall
         run: make depsinstall
         continue-on-error: true
 
