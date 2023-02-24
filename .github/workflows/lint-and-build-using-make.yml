@@ -113,7 +113,7 @@ jobs:
         run: apt-get update && apt-get install -y --no-install-recommends ${{ inputs.os-dependencies }}
 
       # DEPRECATED; replacing with depsinstall Makefile recipe (broader scope)
-      - name: Install go generate dependencies (if requested)
+      - name: Install go generate dependencies (deprecated)
         if: inputs.gogeninstall
         run: |
           echo "The gogeninstall input is deprecated and will be removed soon."
