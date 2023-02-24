@@ -11,11 +11,6 @@ on:
       os-dependencies:
         required: false
         type: string
-      # Deprecated input.
-      # https://github.com/atc0005/shared-project-resources/issues/71
-      gogeninstall:
-        required: false
-        type: boolean
 
 jobs:
   lint_code_with_makefile:
@@ -112,17 +107,9 @@ jobs:
         if: ${{ inputs.os-dependencies != '' }}
         run: apt-get update && apt-get install -y --no-install-recommends ${{ inputs.os-dependencies }}
 
-      # DEPRECATED; replacing with depsinstall Makefile recipe (broader scope)
-      - name: Install go generate dependencies (deprecated)
-        if: inputs.gogeninstall
-        run: |
-          echo "The gogeninstall input is deprecated and will be removed soon."
-          echo "See https://github.com/atc0005/shared-project-resources/issues/71 for details."
-          exit 1
-
       # Try to install build dependencies using the depsinstall Makefile
       # recipe but allow this step to fail without failing the whole job if
-      # the recipe is not yet implemented by a project's Makfile.
+      # the recipe is not yet implemented by a project's Makefile.
       - name: Install build dependencies (try)
         run: make depsinstall
         continue-on-error: true
