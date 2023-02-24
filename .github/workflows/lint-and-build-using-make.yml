@@ -61,6 +61,61 @@ jobs:
       - name: Run Go linting tools using project Makefile
         run: make linting
 
+  build_code_with_makefile_quick_recipe:
+    name: Build codebase using Makefile quick recipe
+
+    # NOTE: This recipe does not yet exist for many of the projects using this
+    # workflow, so mark it as "OK" to fail without failing CI jobs as a whole.
+    continue-on-error: true
+
+    runs-on: ubuntu-latest
+    # Default: 360 minutes
+    timeout-minutes: 10
+    container:
+      # Use (lightly touched) mirror of current "vanilla" upstream golang image
+      image: "ghcr.io/atc0005/go-ci:go-ci-stable-mirror-build"
+
+    steps:
+      - name: Print go version
+        run: go version
+
+      - name: Check out code (full history)
+        uses: actions/checkout@v3.3.0
+        with:
+          # Full history is needed to allow listing tags via build tooling
+          # (e.g., go-winres, git-describe-semver)
+          fetch-depth: 0
+
+      # Mark the current working directory as a safe directory in git to
+      # resolve "dubious ownership" complaints.
+      #
+      # https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
+      # https://confluence.atlassian.com/bbkb/git-command-returns-fatal-error-about-the-repository-being-owned-by-someone-else-1167744132.html
+      # https://github.com/actions/runner-images/issues/6775
+      # https://github.com/actions/checkout/issues/766
+      - name: Mark the current working directory as a safe directory in git
+        # run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        run: git config --global --add safe.directory "${PWD}"
+
+      - name: Install Ubuntu packages (standard set)
+        if: ${{ inputs.os-dependencies == '' }}
+        # bsdmainutils provides "column" which is used by the Makefile
+        run: apt-get update && apt-get install -y --no-install-recommends make gcc bsdmainutils xz-utils
+
+      - name: Install Ubuntu packages (custom set)
+        if: ${{ inputs.os-dependencies != '' }}
+        run: apt-get update && apt-get install -y --no-install-recommends ${{ inputs.os-dependencies }}
+
+      # Try to install build dependencies using the depsinstall Makefile
+      # recipe but allow this step to fail without failing the whole job if
+      # the recipe is not yet implemented by a project's Makefile.
+      - name: Install build dependencies (try)
+        run: make depsinstall
+        continue-on-error: true
+
+      - name: Build using project Makefile "quick" recipe
+        run: make quick
+
   # TODO: Move this to the scheduled-monthly.yml file *after* a sufficient
   # number of projects have been updated to provide a `quick` Makefile recipe.
   build_code_with_makefile_all_recipe:
