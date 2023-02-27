@@ -62,7 +62,7 @@ jobs:
         run: make linting
 
   build_code_with_makefile_quick_recipe:
-    name: Build codebase using Makefile quick recipe
+    name: Build codebase using Makefile quick recipe (try)
 
     # NOTE: This recipe does not yet exist for many of the projects using this
     # workflow, so mark it as "OK" to fail without failing CI jobs as a whole.
