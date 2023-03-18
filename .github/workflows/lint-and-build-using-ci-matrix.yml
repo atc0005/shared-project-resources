@@ -64,6 +64,10 @@ jobs:
           staticcheck --version
           staticcheck $(go list -mod=vendor ./... | grep -v /vendor/)
 
+  optional_linting:
+    name: Optional Linting
+    uses: atc0005/shared-project-resources/.github/workflows/lint-using-optional-linters.yml@master
+
   test_code:
     name: Run tests
     runs-on: ubuntu-latest

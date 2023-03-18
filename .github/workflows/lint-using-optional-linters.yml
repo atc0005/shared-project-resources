@@ -1,0 +1,71 @@
+# Copyright 2023 Adam Chalkley
+#
+# https://github.com/atc0005/shared-project-resources
+#
+# Licensed under the MIT License. See LICENSE file in the project root for
+# full license information.
+
+on:
+  workflow_call:
+
+jobs:
+  lint_via_optional_linters:
+    name: Lint codebase using optional linters
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Don't flag the whole workflow as failed if "experimental" matrix jobs
+    # fail. This allows the unstable image linting tasks to fail without
+    # marking the oldstable and stable image linting jobs as failed.
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      # Don't stop all workflow jobs if the unstable image linting tasks fail.
+      fail-fast: false
+      matrix:
+        container-image: ["go-ci-oldstable", "go-ci-stable"]
+        experimental: [false]
+        include:
+          - container-image: "go-ci-unstable"
+            experimental: true
+    container:
+      image: "ghcr.io/atc0005/go-ci:${{ matrix.container-image}}"
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3.4.0
+
+      # Mark the current working directory as a safe directory in git to
+      # resolve "dubious ownership" complaints.
+      #
+      # https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
+      # https://confluence.atlassian.com/bbkb/git-command-returns-fatal-error-about-the-repository-being-owned-by-someone-else-1167744132.html
+      # https://github.com/actions/runner-images/issues/6775
+      # https://github.com/actions/checkout/issues/766
+      - name: Mark the current working directory as a safe directory in git
+        # run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        run: git config --global --add safe.directory "${PWD}"
+
+      - name: Run orijtech/structslop
+        run: |
+          echo "structslop version $(go version -m $(which structslop) | awk '$1 == "mod" { print $3 }')"
+          structslop ./...
+
+      - name: Run orijtech/tickeryzer
+        run: |
+          echo "tickeryzer version $(go version -m $(which tickeryzer) | awk '$1 == "mod" { print $3 }')"
+          tickeryzer ./...
+
+      - name: Run orijtech/httperroryzer
+        run: |
+          echo "httperroryzer version $(go version -m $(which httperroryzer) | awk '$1 == "mod" { print $3 }')"
+          httperroryzer ./...
+
+      - name: Run fatih/errwrap
+        run: |
+          echo "errwrap version $(go version -m $(which errwrap) | awk '$1 == "mod" { print $3 }')"
+          errwrap ./...
+
+      - name: Run pelletier/go-toml
+        run: |
+          echo "tomll version $(go version -m $(which tomll) | awk '$1 == "mod" { print $3 }')"
+          find . -type f -name '*.toml' -exec tomll {} \;
+          git diff --exit-code
