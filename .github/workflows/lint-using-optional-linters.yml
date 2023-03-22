@@ -44,10 +44,12 @@ jobs:
         # run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
         run: git config --global --add safe.directory "${PWD}"
 
-      - name: Run orijtech/structslop
-        run: |
-          echo "structslop version $(go version -m $(which structslop) | awk '$1 == "mod" { print $3 }')"
-          structslop ./...
+      # DISABLED until https://github.com/atc0005/go-ci/issues/962 is resolved
+      #
+      # - name: Run orijtech/structslop
+      #   run: |
+      #     echo "structslop version $(go version -m $(which structslop) | awk '$1 == "mod" { print $3 }')"
+      #     structslop ./...
 
       - name: Run orijtech/tickeryzer
         run: |
