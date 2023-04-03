@@ -66,8 +66,12 @@ jobs:
           echo "errwrap version $(go version -m $(which errwrap) | awk '$1 == "mod" { print $3 }')"
           errwrap ./...
 
-      - name: Run pelletier/go-toml
-        run: |
-          echo "tomll version $(go version -m $(which tomll) | awk '$1 == "mod" { print $3 }')"
-          find . -type f -name '*.toml' -exec tomll {} \;
-          git diff --exit-code
+      # DISABLED until further review:
+      #
+      #   - linting suggestions do not seem to apply
+      #
+      # - name: Run pelletier/go-toml
+      #   run: |
+      #     echo "tomll version $(go version -m $(which tomll) | awk '$1 == "mod" { print $3 }')"
+      #     find . -type f -name '*.toml' -exec tomll {} \;
+      #     git diff --exit-code
