@@ -31,7 +31,7 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3.5.1
+        uses: actions/checkout@v3.5.2
 
       # Mark the current working directory as a safe directory in git to
       # resolve "dubious ownership" complaints.
@@ -90,7 +90,7 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3.5.1
+        uses: actions/checkout@v3.5.2
 
       # Mark the current working directory as a safe directory in git to
       # resolve "dubious ownership" complaints.
@@ -132,7 +132,7 @@ jobs:
         run: go version
 
       - name: Check out code
-        uses: actions/checkout@v3.5.1
+        uses: actions/checkout@v3.5.2
 
       # Mark the current working directory as a safe directory in git to
       # resolve "dubious ownership" complaints.
