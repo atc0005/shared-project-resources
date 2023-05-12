@@ -21,11 +21,8 @@ jobs:
       # Don't stop all workflow jobs if the unstable image linting tasks fail.
       fail-fast: false
       matrix:
-        container-image: ["go-ci-oldstable", "go-ci-stable"]
-        experimental: [false]
-        include:
-          - container-image: "go-ci-unstable"
-            experimental: true
+        container-image: ["go-ci-oldstable", "go-ci-stable", "go-ci-unstable"]
+        experimental: [true]
     container:
       image: "ghcr.io/atc0005/go-ci:${{ matrix.container-image}}"
 
