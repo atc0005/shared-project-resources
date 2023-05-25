@@ -54,7 +54,10 @@ jobs:
       - name: Run golangci-lint using container-provided config file settings
         run: |
           golangci-lint --version
-          golangci-lint run
+
+          # Override default timeout to accomodate more complex (or CGO)
+          # codebases which take longer to lint.
+          golangci-lint run --timeout=5m
 
       # This is the very latest stable version of staticcheck provided by the
       # atc0005/go-ci container. The version included with golangci-lint often
