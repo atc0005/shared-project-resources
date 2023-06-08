@@ -110,13 +110,6 @@ jobs:
         if: ${{ inputs.os-dependencies != '' }}
         run: apt-get update && apt-get install -y --no-install-recommends ${{ inputs.os-dependencies }}
 
-      # Try to install build dependencies using the depsinstall Makefile
-      # recipe but allow this step to fail without failing the whole job if
-      # the recipe is not yet implemented by a project's Makefile.
-      - name: Install build dependencies (try)
-        run: make depsinstall
-        continue-on-error: true
-
       - name: Build using project Makefile "quick" recipe
         run: make quick
 
