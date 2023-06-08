@@ -19,6 +19,17 @@ on:
         required: false
         type: string
 
+      # NOTE:
+      #
+      # We explicitly set values in this workflow for workflows that we import
+      # and do not yet use these, but we stub these out for later use.
+      build-packages:
+        required: false
+        type: boolean
+      build-podman-release:
+        required: false
+        type: boolean
+
 jobs:
   lint_and_build_using_ci_matrix:
     name: CI matrix
@@ -36,9 +47,17 @@ jobs:
     uses: atc0005/shared-project-resources/.github/workflows/lint-and-build-using-make.yml@master
 
   build_packages_using_container:
-    name: Build packages
+    name: Build packages using container
     with:
       # TODO: Consider passing this from the calling/importing workflow
       # instead of explicitly enabling here.
       build-packages: true
+    uses: atc0005/shared-project-resources/.github/workflows/container-builds.yml@master
+
+  build_release_assets_using_container:
+    name: Build release assets using container
+    with:
+      # TODO: Consider passing this from the calling/importing workflow
+      # instead of explicitly enabling here.
+      build-podman-release: true
     uses: atc0005/shared-project-resources/.github/workflows/container-builds.yml@master
