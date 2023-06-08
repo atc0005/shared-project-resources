@@ -124,7 +124,7 @@ jobs:
   # and enable it only by explicit request (e.g., monthly scheduled job).
   build_code_with_makefile_all_recipe:
     name: Build codebase using Makefile all recipe
-    if: inputs.build-all
+    if: ${{ inputs.build-all }}
     runs-on: ubuntu-latest
     # Default: 360 minutes
     #
