@@ -65,7 +65,7 @@ jobs:
         run: make linting
 
   build_code_with_makefile_quick_recipe:
-    name: Build codebase using Makefile quick recipe (try)
+    name: Build codebase using Makefile quick recipe
 
     # NOTE: This recipe should now exist for the majority of projects using
     # these (importable) workflows. We reverse the "it is OK to fail" setting
