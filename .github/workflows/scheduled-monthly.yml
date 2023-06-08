@@ -29,4 +29,8 @@ jobs:
     with:
       # Pass on any values specified by the importing workflow.
       os-dependencies: ${{ inputs.os-dependencies }}
+
+      # The `make all` recipe can be expensive, so we disable it by default
+      # and enable it here as part of a scheduled monthly job.
+      build-all: true
     uses: atc0005/shared-project-resources/.github/workflows/lint-and-build-using-make.yml@master
