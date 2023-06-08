@@ -11,6 +11,9 @@ on:
       os-dependencies:
         required: false
         type: string
+      build-all:
+        required: false
+        type: boolean
 
 jobs:
   lint_code_with_makefile:
@@ -116,10 +119,11 @@ jobs:
       - name: Build using project Makefile "quick" recipe
         run: make quick
 
-  # TODO: Move this to the scheduled-monthly.yml file *after* a sufficient
-  # number of projects have been updated to provide a `quick` Makefile recipe.
+  # The `make all` recipe can be expensive, so we disable it by default
+  # and enable it only by explicit request (e.g., monthly scheduled job).
   build_code_with_makefile_all_recipe:
     name: Build codebase using Makefile all recipe
+    if: inputs.build-all
     runs-on: ubuntu-latest
     # Default: 360 minutes
     #
