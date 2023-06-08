@@ -34,3 +34,11 @@ jobs:
       # and enable it here as part of a scheduled monthly job.
       build-all: true
     uses: atc0005/shared-project-resources/.github/workflows/lint-and-build-using-make.yml@master
+
+  build_packages_using_container:
+    name: Build packages
+    with:
+      # TODO: Consider passing this from the calling/importing workflow
+      # instead of explicitly enabling here.
+      build-packages: true
+    uses: atc0005/shared-project-resources/.github/workflows/container-builds.yml@master
