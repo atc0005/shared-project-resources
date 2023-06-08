@@ -1,0 +1,48 @@
+# Copyright Adam Chalkley
+#
+# https://github.com/atc0005/shared-project-resources
+#
+# Licensed under the MIT License. See LICENSE file in the project root for
+# full license information.
+
+on:
+  workflow_call:
+    inputs:
+      build-packages:
+        required: false
+        type: boolean
+
+jobs:
+  build_packages_via_makefile:
+    name: Build packages using Makefile
+    if: ${{ inputs.build-packages }}
+    runs-on: ubuntu-latest
+    # Default: 360 minutes
+    timeout-minutes: 10
+    container:
+      # Use current/stable Go build image as our build environment instead of
+      # directly in the runner environment; our build image provides all
+      # tooling needed to generate packages.
+      image: "ghcr.io/atc0005/go-ci:go-ci-stable-build"
+
+    steps:
+      - name: Print go version
+        run: go version
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v3.5.2
+
+      # Mark the current working directory as a safe directory in git to
+      # resolve "dubious ownership" complaints.
+      #
+      # https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
+      # https://confluence.atlassian.com/bbkb/git-command-returns-fatal-error-about-the-repository-being-owned-by-someone-else-1167744132.html
+      # https://github.com/actions/runner-images/issues/6775
+      # https://github.com/actions/checkout/issues/766
+      - name: Mark the current working directory as a safe directory in git
+        # run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        run: git config --global --add safe.directory "${PWD}"
+
+      - name: Build packages
+        run: make packages
+
