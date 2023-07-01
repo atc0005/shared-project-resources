@@ -54,7 +54,7 @@ jobs:
     if: ${{ inputs.build-podman-release }}
     runs-on: ubuntu-latest
     # Default: 360 minutes
-    timeout-minutes: 20
+    timeout-minutes: 45
 
     steps:
       - name: Check out code (full history)
