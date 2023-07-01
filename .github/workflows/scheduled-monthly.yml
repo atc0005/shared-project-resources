@@ -18,11 +18,6 @@ on:
       os-dependencies:
         required: false
         type: string
-
-      # NOTE:
-      #
-      # We explicitly set values in this workflow for workflows that we import
-      # and do not yet use these, but we stub these out for later use.
       build-packages:
         required: false
         type: boolean
@@ -53,8 +48,7 @@ jobs:
       # does not support generating release assets directly (e.g., library
       # project).
       build-packages: true
-      build-podman-release: false
-    uses: atc0005/shared-project-resources/.github/workflows/container-builds.yml@master
+    uses: atc0005/shared-project-resources/.github/workflows/container-builds-packages.yml@master
 
   build_release_assets_using_container:
     name: Build release assets using container
@@ -62,6 +56,5 @@ jobs:
       # TODO: Override this from the calling/importing workflow if the project
       # does not support generating release assets directly (e.g., library
       # project).
-      build-packages: false
       build-podman-release: true
-    uses: atc0005/shared-project-resources/.github/workflows/container-builds.yml@master
+    uses: atc0005/shared-project-resources/.github/workflows/container-builds-release.yml@master
