@@ -49,15 +49,19 @@ jobs:
   build_packages_using_container:
     name: Build packages using container
     with:
-      # TODO: Consider passing this from the calling/importing workflow
-      # instead of explicitly enabling here.
+      # TODO: Override this from the calling/importing workflow if the project
+      # does not support generating release assets directly (e.g., library
+      # project).
       build-packages: true
+      build-podman-release: false
     uses: atc0005/shared-project-resources/.github/workflows/container-builds.yml@master
 
   build_release_assets_using_container:
     name: Build release assets using container
     with:
-      # TODO: Consider passing this from the calling/importing workflow
-      # instead of explicitly enabling here.
+      # TODO: Override this from the calling/importing workflow if the project
+      # does not support generating release assets directly (e.g., library
+      # project).
+      build-packages: false
       build-podman-release: true
     uses: atc0005/shared-project-resources/.github/workflows/container-builds.yml@master
