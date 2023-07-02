@@ -21,9 +21,11 @@ on:
       build-packages:
         required: false
         type: boolean
+        default: true
       build-podman-release:
         required: false
         type: boolean
+        default: true
 
 jobs:
   lint_and_build_using_ci_matrix:
