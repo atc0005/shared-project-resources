@@ -11,7 +11,7 @@ on:
       build-packages:
         required: false
         type: boolean
-
+        default: true
 
 jobs:
   build_packages_via_makefile:
