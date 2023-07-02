@@ -47,7 +47,7 @@ jobs:
       # TODO: Override this from the calling/importing workflow if the project
       # does not support generating release assets directly (e.g., library
       # project).
-      build-packages: true
+      build-packages: ${{ inputs.build-packages }}
     uses: atc0005/shared-project-resources/.github/workflows/container-builds-packages.yml@master
 
   build_release_assets_using_container:
@@ -56,5 +56,5 @@ jobs:
       # TODO: Override this from the calling/importing workflow if the project
       # does not support generating release assets directly (e.g., library
       # project).
-      build-podman-release: true
+      build-podman-release: ${{ inputs.build-podman-release }}
     uses: atc0005/shared-project-resources/.github/workflows/container-builds-release.yml@master
