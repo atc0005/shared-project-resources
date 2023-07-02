@@ -19,7 +19,11 @@ jobs:
     if: ${{ inputs.build-packages }}
     runs-on: ubuntu-latest
     # Default: 360 minutes
-    timeout-minutes: 10
+    #
+    # The check-vmware project requires more time than the others, so we use
+    # that projects build time as the max runtime for this workflow for all
+    # projects.
+    timeout-minutes: 55
     container:
       # Use current/stable Go build image as our build environment instead of
       # directly in the runner environment; our build image provides all
