@@ -16,6 +16,7 @@ jobs:
   # https://github.com/atc0005/shared-project-resources/issues/135
   assert_pr_branch_is_ahead_of_primary_branch:
     name: Assert PR branch is ahead of primary
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
