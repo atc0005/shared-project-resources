@@ -1,0 +1,4 @@
+New file
+
+This PR should be failed by CI logic because we did not branch from the latest changes in the primary branch.
+
