@@ -10,6 +10,10 @@ on:
     types: [opened, synchronize]
   workflow_call:
 
+  # Allow triggering workflow manually
+  # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch
+  workflow_dispatch:
+
 jobs:
   # https://stackoverflow.com/questions/76151411/use-github-actions-to-check-if-branch-is-up-to-date-with-main
   # https://stackoverflow.com/a/76151412/903870
