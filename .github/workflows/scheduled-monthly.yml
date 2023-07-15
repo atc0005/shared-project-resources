@@ -28,11 +28,34 @@ on:
         default: true
 
 jobs:
+  # https://stackoverflow.com/questions/76151411/use-github-actions-to-check-if-branch-is-up-to-date-with-main
+  # https://stackoverflow.com/a/76151412/903870
+  # https://github.com/atc0005/shared-project-resources/issues/135
+  assert_pr_branch_is_ahead_of_primary_branch:
+    name: Assert PR branch is ahead of primary
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out code (full history)
+        uses: actions/checkout@v3.5.3
+        with:
+          # Full history is needed to allow listing tags via build tooling
+          # (e.g., go-winres, git-describe-semver)
+          fetch-depth: 0
+
+      - name: Check if branch is ahead of master
+        run: |
+          if ! git merge-base --is-ancestor origin/master ${{ github.event.pull_request.head.sha }};
+          then echo "This branch is not up to date with primary branch";
+          exit 1; fi
+
   lint_and_build_using_ci_matrix:
+    needs: assert_pr_branch_is_ahead_of_primary_branch
     name: CI matrix
     uses: atc0005/shared-project-resources/.github/workflows/lint-and-build-using-ci-matrix.yml@master
 
   lint_and_build_using_makefile:
+    needs: assert_pr_branch_is_ahead_of_primary_branch
     name: Makefile
     with:
       # Pass on any values specified by the importing workflow.
@@ -44,6 +67,7 @@ jobs:
     uses: atc0005/shared-project-resources/.github/workflows/lint-and-build-using-make.yml@master
 
   build_packages_using_container:
+    needs: assert_pr_branch_is_ahead_of_primary_branch
     name: Build packages using container
     with:
       # TODO: Override this from the calling/importing workflow if the project
@@ -53,6 +77,7 @@ jobs:
     uses: atc0005/shared-project-resources/.github/workflows/container-builds-packages.yml@master
 
   build_release_assets_using_container:
+    needs: assert_pr_branch_is_ahead_of_primary_branch
     name: Build release assets using container
     with:
       # TODO: Override this from the calling/importing workflow if the project
