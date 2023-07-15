@@ -19,11 +19,11 @@ jobs:
   # https://github.com/atc0005/shared-project-resources/issues/135
   assert_pr_branch_is_ahead_of_primary_branch:
     name: Assert PR branch is ahead of primary
-    if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Check out code (full history)
+        if: ${{ github.event_name == 'pull_request' }}
         uses: actions/checkout@v3.5.3
         with:
           # Full history is needed to allow listing tags via build tooling
@@ -31,6 +31,7 @@ jobs:
           fetch-depth: 0
 
       - name: Check if branch is ahead of master
+        if: ${{ github.event_name == 'pull_request' }}
         run: |
           if ! git merge-base --is-ancestor origin/master ${{ github.event.pull_request.head.sha }};
           then echo "This branch is not up to date with primary branch";
