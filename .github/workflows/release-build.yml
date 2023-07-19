@@ -1,0 +1,145 @@
+# Copyright 2023 Adam Chalkley
+#
+# https://github.com/atc0005/shared-project-resources
+#
+# Licensed under the MIT License. See LICENSE file in the project root for
+# full license information.
+
+on:
+  workflow_call:
+    inputs:
+      generate-assets:
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  test_code:
+    name: Run tests
+
+    # Skip job if we're not working with a tag.
+    if: startsWith(github.ref, 'refs/tags')
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Don't flag the whole workflow as failed if "experimental" matrix jobs
+    # fail. This allows unstable image tests to fail without marking the
+    # oldstable and stable image jobs as failed.
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      # Don't stop all workflow jobs if the unstable image tests fail.
+      fail-fast: false
+      matrix:
+        container-image: ["go-ci-oldstable", "go-ci-stable"]
+        experimental: [false]
+        include:
+          - container-image: "go-ci-unstable"
+            experimental: true
+    container:
+      image: "ghcr.io/atc0005/go-ci:${{ matrix.container-image}}"
+
+    steps:
+      - name: Log tag info
+        run: |
+          echo "Ref type: ${{ github.ref_type }}"
+          echo "Ref name: ${{ github.ref_name }}"
+          echo "Ref full: ${{ github.ref }}"
+          echo "Commit SHA: ${{ github.sha }}"
+
+      - name: Check out code (full history)
+        uses: actions/checkout@v3.5.3
+        with:
+          # Full history is needed to allow listing tags via build tooling
+          # (e.g., go-winres, git-describe-semver)
+          fetch-depth: 0
+
+      # Mark the current working directory as a safe directory in git to
+      # resolve "dubious ownership" complaints.
+      #
+      # https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
+      # https://confluence.atlassian.com/bbkb/git-command-returns-fatal-error-about-the-repository-being-owned-by-someone-else-1167744132.html
+      # https://github.com/actions/runner-images/issues/6775
+      # https://github.com/actions/checkout/issues/766
+      - name: Mark the current working directory as a safe directory in git
+        # run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        run: git config --global --add safe.directory "${PWD}"
+
+      - name: Run all tests
+        run: go test -mod=vendor -v ./...
+
+  release_build:
+    name: Release build using Podman and Makefile
+
+    # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+    permissions:
+      contents: write
+      discussions: write
+
+    # Skip job if tests fail or we're not working with a tag.
+    needs: test_code
+    if: startsWith(github.ref, 'refs/tags')
+
+    runs-on: ubuntu-latest
+    # Default: 360 minutes
+    timeout-minutes: 45
+
+    steps:
+      - name: Log tag info
+        run: |
+          echo "Ref type: ${{ github.ref_type }}"
+          echo "Ref name: ${{ github.ref_name }}"
+          echo "Ref full: ${{ github.ref }}"
+          echo "Commit SHA: ${{ github.sha }}"
+
+      - name: Check out code (full history)
+        uses: actions/checkout@v3.5.3
+        with:
+          # Full history is needed to allow listing tags via build tooling
+          # (e.g., go-winres, git-describe-semver)
+          fetch-depth: 0
+
+      # Mark the current working directory as a safe directory in git to
+      # resolve "dubious ownership" complaints.
+      #
+      # https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
+      # https://confluence.atlassian.com/bbkb/git-command-returns-fatal-error-about-the-repository-being-owned-by-someone-else-1167744132.html
+      # https://github.com/actions/runner-images/issues/6775
+      # https://github.com/actions/checkout/issues/766
+      - name: Mark the current working directory as a safe directory in git
+        # run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        run: git config --global --add safe.directory "${PWD}"
+
+      - name: Use Podman to generate release build assets
+        if: ${{ inputs.generate-assets }}
+        run: make podman-release-build
+
+      - name: Generate pre-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        if: contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'rc')
+        run: |
+          echo Generating pre-release
+
+          gh release create ${{ github.ref_name }} \
+            --verify-tag \
+            --prerelease \
+            --discussion-category 'Dev/Release Candidate' \
+            --generate-notes \
+            $(if [ -d "release_assets" ]; then find release_assets/ -type f; fi)
+
+      - name: Generate stable release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        # https://github.com/orgs/community/discussions/26712
+        if: ${{ !(contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'rc')) }}
+        run: |
+          echo Generating stable release
+
+          gh release create ${{ github.ref_name }} \
+            --verify-tag \
+            --latest \
+            --discussion-category 'Stable Release' \
+            --generate-notes \
+            $(if [ -d "release_assets" ]; then find release_assets/ -type f; fi)
