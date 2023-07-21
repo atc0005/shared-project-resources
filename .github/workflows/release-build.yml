@@ -124,6 +124,7 @@ jobs:
           gh release create ${{ github.ref_name }} \
             --verify-tag \
             --prerelease \
+            --target "development" \
             --discussion-category 'Dev/Release Candidate' \
             --generate-notes \
             $(if [ -d "release_assets" ]; then find release_assets/ -type f; fi)
