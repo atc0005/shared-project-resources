@@ -13,13 +13,26 @@
 
 on:
   workflow_call:
+    inputs:
+      default-repo:
+        required: false
+        type: string
+        default: origin
+      primary-branch:
+        required: false
+        type: string
+        default: master
+      development-branch:
+        required: false
+        type: string
+        default: development
 
 jobs:
   # https://stackoverflow.com/questions/76151411/use-github-actions-to-check-if-branch-is-up-to-date-with-main
   # https://stackoverflow.com/a/76151412/903870
   # https://github.com/atc0005/shared-project-resources/issues/135
   assert_pr_branch_is_ahead_of_primary_branch:
-    name: Assert PR branch is ahead of primary
+    name: Assert PR branch is ahead
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -31,11 +44,26 @@ jobs:
           # (e.g., go-winres, git-describe-semver)
           fetch-depth: 0
 
-      - name: Check if branch is ahead of master
+      - name: Assert source branches are set
+        run: |
+          abort="false"
+          if [[ "${{ format('{0}/{1}', inputs.default-repo, inputs.primary-branch) }}" == "/" ]] ; then \
+            echo "default repo and primary branch values not set!"; abort="true"; fi
+
+          if [[ "${{ format('{0}/{1}', inputs.default-repo, inputs.development-branch) }}" == "/" ]] ; then \
+            echo "default repo and development branch values not set!"; abort="true"; fi
+
+          if [[ "$abort" == "true" ]]; then exit 1; fi
+
+          echo "Primary branch: ${{ format('{0}/{1}', inputs.default-repo, inputs.primary-branch) }}"
+          echo "Development branch: ${{ format('{0}/{1}', inputs.default-repo, inputs.development-branch) }}"
+
+      - name: Assert PR branch is ahead of acceptable source branches
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          if ! git merge-base --is-ancestor origin/master ${{ github.event.pull_request.head.sha }};
-          then echo "This branch is not up to date with primary branch";
+          if ! (git merge-base --is-ancestor ${{ format('{0}/{1}', inputs.default-repo, inputs.primary-branch) }} ${{ github.event.pull_request.head.sha }} || \
+            git merge-base --is-ancestor ${{ format('{0}/{1}', inputs.default-repo, inputs.development-branch) }} ${{ github.event.pull_request.head.sha }});
+          then echo "This branch is not up to date with ${{ inputs.primary-branch }} or ${{ inputs.development-branch }} branches!";
           exit 1; fi
 
   lint:

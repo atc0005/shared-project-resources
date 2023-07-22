@@ -1,0 +1,42 @@
+# Copyright 2023 Adam Chalkley
+#
+# https://github.com/atc0005/shared-project-resources
+#
+# Licensed under the MIT License. See LICENSE file in the project root for
+# full license information.
+
+# Jobs that are local to this repo (not offered to dependent/calling
+# projects).
+
+name: Local Jobs
+
+on:
+  pull_request:
+    # `synchronized` seems to equate to pushing new commits to a linked branch
+    # (whether force-pushed or not)
+    types: [opened, synchronize]
+
+  # Allow triggering workflow manually
+  # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      default-repo:
+        required: false
+        type: string
+        default: origin
+      primary-branch:
+        required: false
+        type: string
+        default: master
+      development-branch:
+        required: false
+        type: string
+        default: development
+
+jobs:
+  lint:
+    # Only run this job on non-push events (e.g., pull requests)
+    if: github.event_name != 'push'
+    name: Lint
+    uses: atc0005/shared-project-resources/.github/workflows/lint-project-files.yml@master
+

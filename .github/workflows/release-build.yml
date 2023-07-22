@@ -12,6 +12,10 @@ on:
         required: false
         type: boolean
         default: true
+      default-repo:
+        required: false
+        type: string
+        default: origin
       primary-branch:
         required: false
         type: string
