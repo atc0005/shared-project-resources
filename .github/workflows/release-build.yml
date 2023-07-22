@@ -12,6 +12,18 @@ on:
         required: false
         type: boolean
         default: true
+      default-repo:
+        required: false
+        type: string
+        default: origin
+      primary-branch:
+        required: false
+        type: string
+        default: master
+      development-branch:
+        required: false
+        type: string
+        default: development
 
 jobs:
   test_code:
@@ -113,17 +125,37 @@ jobs:
         if: ${{ inputs.generate-assets }}
         run: make podman-release-build
 
-      - name: Generate pre-release
+      # Releases for "dev" tags are associated with the dedicated development
+      # branch.
+      - name: Generate dev pre-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-        if: contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'rc')
+        if: contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta')
         run: |
-          echo Generating pre-release
+          echo Generating dev pre-release
 
           gh release create ${{ github.ref_name }} \
             --verify-tag \
             --prerelease \
+            --target "${{ inputs.development-branch }}" \
+            --discussion-category 'Dev/Release Candidate' \
+            --generate-notes \
+            $(if [ -d "release_assets" ]; then find release_assets/ -type f; fi)
+
+      # Releases for "rc" tags are associated with the primary branch where
+      # stable releases are sourced.
+      - name: Generate rc pre-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: contains(github.ref_name, 'rc')
+        run: |
+          echo Generating rc pre-release
+
+          gh release create ${{ github.ref_name }} \
+            --verify-tag \
+            --prerelease \
+            --target "${{ inputs.primary-branch }}" \
             --discussion-category 'Dev/Release Candidate' \
             --generate-notes \
             $(if [ -d "release_assets" ]; then find release_assets/ -type f; fi)
@@ -140,6 +172,7 @@ jobs:
           gh release create ${{ github.ref_name }} \
             --verify-tag \
             --latest \
+            --target "${{ inputs.primary-branch }}" \
             --discussion-category 'Stable Release' \
             --generate-notes \
             $(if [ -d "release_assets" ]; then find release_assets/ -type f; fi)
