@@ -49,7 +49,7 @@ jobs:
     steps:
       - name: Check out code (full history)
         if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@v3.6.0
         with:
           # Full history is needed to allow listing tags via build tooling
           # (e.g., go-winres, git-describe-semver)
@@ -98,7 +98,7 @@ jobs:
           echo "markdownlint version: $(markdownlint --version)"
 
       - name: Check out code
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@v3.6.0
 
       # Mark the current working directory as a safe directory in git to
       # resolve "dubious ownership" complaints.
@@ -132,7 +132,7 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@v3.6.0
 
       # Mark the current working directory as a safe directory in git to
       # resolve "dubious ownership" complaints.
