@@ -90,6 +90,31 @@ jobs:
       # Pass on any values specified by the importing workflow.
       os-dependencies: ${{ inputs.os-dependencies }}
 
+      # Makefile-initiated linting tasks use the latest upstream versions of
+      # community standard linting tools (e.g., staticcheck, golangci-lint)
+      # instead of relying on a fixed version (as with container-based linting
+      # tasks).
+      #
+      # This is *usually* fine, but when buggy linter releases (e.g., gosec)
+      # are bundled into a new golangci-lint release the development team
+      # generally opts to give the upstream linter devs time to remediate the
+      # problem instead of immediately rolling back the buggy bundled linter.
+      # This makes sense from a project management perspective (time
+      # requirements), but in the meantime this increases the number of
+      # false-positive linting failures for anyone using the very latest
+      # version of golangci-lint.
+      #
+      # As an initial workaround we restrict Makefile-initiated linting tasks
+      # as a monthly job. The hope is that by a month later any upstream
+      # linter issues would be fixed or the golangci-lint dev team would
+      # release a new version with the buggy upstream linter rolled back.
+      #
+      # At some point we may opt to drop Makefile-initiated linting tasks
+      # entirely.
+      #
+      # refs https://github.com/atc0005/shared-project-resources/issues/149
+      lint-using-makefile: true
+
       # The `make all` recipe can be expensive, so we disable it by default
       # and enable it here as part of a scheduled monthly job.
       build-all: true

@@ -14,6 +14,10 @@ on:
       build-all:
         required: false
         type: boolean
+      lint-using-makefile:
+        required: false
+        type: boolean
+        default: false
       default-repo:
         required: false
         type: string
@@ -69,6 +73,7 @@ jobs:
   lint_code_with_makefile:
     needs: assert_pr_branch_is_ahead_of_primary_branch
     name: Lint codebase using Makefile
+    if: ${{ inputs.lint-using-makefile }}
     runs-on: ubuntu-latest
     # Default: 360 minutes
     timeout-minutes: 10
