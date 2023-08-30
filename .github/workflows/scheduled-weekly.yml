@@ -40,9 +40,11 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         uses: actions/checkout@v3.6.0
         with:
-          # Full history is needed to allow listing tags via build tooling
-          # (e.g., go-winres, git-describe-semver)
-          fetch-depth: 0
+          # Retrieve sufficient amount of history (along with tags) to allow
+          # build tooling (e.g., go-winres, git-describe-semver) to processing
+          # tags as part of asset generation tasks.
+          fetch-depth: 50
+          fetch-tags: true
 
       - name: Assert source branches are set
         run: |
