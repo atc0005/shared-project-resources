@@ -32,6 +32,10 @@ on:
         required: false
         type: string
         default: development
+      fetch-depth:
+        required: false
+        type: number
+        default: 50
 
 jobs:
   lint:
