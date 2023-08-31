@@ -20,6 +20,10 @@ on:
         required: false
         type: string
         default: development
+      fetch-depth:
+        required: false
+        type: number
+        default: 50
 
 jobs:
   # https://stackoverflow.com/questions/76151411/use-github-actions-to-check-if-branch-is-up-to-date-with-main
@@ -37,8 +41,13 @@ jobs:
           # Retrieve sufficient amount of history (along with tags) to allow
           # build tooling (e.g., go-winres, git-describe-semver) to processing
           # tags as part of asset generation tasks.
-          fetch-depth: 50
+          fetch-depth: ${{ inputs.fetch-depth }}
           fetch-tags: true
+
+      - name: Fetch additional references
+        run: |
+          git fetch origin ${{ inputs.primary-branch }} --depth 50
+          git fetch origin ${{ inputs.development-branch }} --depth 50
 
       - name: Assert source branches are set
         run: |
