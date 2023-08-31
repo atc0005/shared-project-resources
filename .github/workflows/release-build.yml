@@ -58,7 +58,7 @@ jobs:
           echo "Ref full: ${{ github.ref }}"
           echo "Commit SHA: ${{ github.sha }}"
 
-      - name: Check out code (full history)
+      - name: Check out code (subset)
         uses: actions/checkout@v3.6.0
         with:
           # Retrieve sufficient amount of history (along with tags) to allow
@@ -105,7 +105,7 @@ jobs:
           echo "Ref full: ${{ github.ref }}"
           echo "Commit SHA: ${{ github.sha }}"
 
-      - name: Check out code (full history)
+      - name: Check out code (subset)
         uses: actions/checkout@v3.6.0
         with:
           # Retrieve sufficient amount of history (along with tags) to allow
