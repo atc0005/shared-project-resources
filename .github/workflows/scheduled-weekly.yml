@@ -52,11 +52,10 @@ jobs:
 
       - name: Fetch additional references
         run: |
-          git fetch origin ${{ inputs.primary-branch }} --depth 50
+          git fetch origin ${{ inputs.primary-branch }} --depth ${{ inputs.fetch-depth }}
 
           # Allow fetch attempts for ${{ inputs.development-branch }} to fail
-          git fetch origin ${{ inputs.development-branch }} --depth 50 || true
-
+          git fetch origin ${{ inputs.development-branch }} --depth ${{ inputs.fetch-depth }} || true
       - name: Assert source branches are set
         run: |
           abort="false"
