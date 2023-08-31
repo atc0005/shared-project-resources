@@ -62,24 +62,14 @@ jobs:
           echo "Ref full: ${{ github.ref }}"
           echo "Commit SHA: ${{ github.sha }}"
 
+      # We use completely default options here in order to avoid errors like
+      # this one:
+      #
+      # Error: fatal: Cannot fetch both
+      # 3ab151278eb9c5925b43e42b3cbbf4e85141c18c and refs/tags/v0.36.0-alpha.3
+      # to refs/tags/v0.36.0-alpha.3
       - name: Check out code
         uses: actions/checkout@v3.6.0
-
-#       - name: Check out code (subset)
-#         uses: actions/checkout@v3.6.0
-#         with:
-#           # Retrieve sufficient amount of history (along with tags) to allow
-#           # build tooling (e.g., go-winres, git-describe-semver) to processing
-#           # tags as part of asset generation tasks.
-#           fetch-depth: ${{ inputs.fetch-depth }}
-#           fetch-tags: true
-#
-#       - name: Fetch additional references
-#         run: |
-#           git fetch origin ${{ inputs.primary-branch }} --depth ${{ inputs.fetch-depth }}
-#
-#           # Allow fetch attempts for ${{ inputs.development-branch }} to fail
-#           git fetch origin ${{ inputs.development-branch }} --depth ${{ inputs.fetch-depth }} || true
 
       # Mark the current working directory as a safe directory in git to
       # resolve "dubious ownership" complaints.
@@ -119,14 +109,14 @@ jobs:
           echo "Ref full: ${{ github.ref }}"
           echo "Commit SHA: ${{ github.sha }}"
 
-      - name: Check out code (subset)
+      # We use completely default options here in order to avoid errors like
+      # this one:
+      #
+      # Error: fatal: Cannot fetch both
+      # 3ab151278eb9c5925b43e42b3cbbf4e85141c18c and refs/tags/v0.36.0-alpha.3
+      # to refs/tags/v0.36.0-alpha.3
+      - name: Check out code
         uses: actions/checkout@v3.6.0
-        with:
-          # Retrieve sufficient amount of history (along with tags) to allow
-          # build tooling (e.g., go-winres, git-describe-semver) to processing
-          # tags as part of asset generation tasks.
-          fetch-depth: ${{ inputs.fetch-depth }}
-          fetch-tags: true
 
       # Mark the current working directory as a safe directory in git to
       # resolve "dubious ownership" complaints.
