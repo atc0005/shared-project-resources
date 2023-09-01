@@ -45,6 +45,7 @@ jobs:
           fetch-tags: true
 
       - name: Fetch additional references
+        if: ${{ github.event_name == 'pull_request' }}
         run: |
           git fetch origin ${{ inputs.primary-branch }} --depth ${{ inputs.fetch-depth }}
 
