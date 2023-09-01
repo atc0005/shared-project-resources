@@ -118,15 +118,6 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3.6.0
 
-      # Additional references are needed for choffmeister/git-describe-semver
-      # to successfully generate a release version based on git history.
-      - name: Fetch additional references
-        run: |
-          git fetch origin ${{ inputs.primary-branch }} --depth ${{ inputs.fetch-depth }}
-
-          # Allow fetch attempts for ${{ inputs.development-branch }} to fail
-          git fetch origin ${{ inputs.development-branch }} --depth ${{ inputs.fetch-depth }} || true
-
       # Mark the current working directory as a safe directory in git to
       # resolve "dubious ownership" complaints.
       #
@@ -137,6 +128,15 @@ jobs:
       - name: Mark the current working directory as a safe directory in git
         # run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
         run: git config --global --add safe.directory "${PWD}"
+
+      # Additional references are needed for choffmeister/git-describe-semver
+      # to successfully generate a release version based on git history.
+      - name: Fetch additional references
+        run: |
+          git fetch origin ${{ inputs.primary-branch }} --depth ${{ inputs.fetch-depth }}
+
+          # Allow fetch attempts for ${{ inputs.development-branch }} to fail
+          git fetch origin ${{ inputs.development-branch }} --depth ${{ inputs.fetch-depth }} || true
 
       - name: Use Podman to generate release build assets
         if: ${{ inputs.generate-assets }}

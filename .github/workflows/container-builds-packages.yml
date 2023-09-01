@@ -62,6 +62,17 @@ jobs:
           fetch-depth: ${{ inputs.fetch-depth }}
           fetch-tags: true
 
+      # Mark the current working directory as a safe directory in git to
+      # resolve "dubious ownership" complaints.
+      #
+      # https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
+      # https://confluence.atlassian.com/bbkb/git-command-returns-fatal-error-about-the-repository-being-owned-by-someone-else-1167744132.html
+      # https://github.com/actions/runner-images/issues/6775
+      # https://github.com/actions/checkout/issues/766
+      - name: Mark the current working directory as a safe directory in git
+        # run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        run: git config --global --add safe.directory "${PWD}"
+
       - name: Fetch additional references
         if: ${{ github.event_name == 'pull_request' }}
         run: |
@@ -107,14 +118,6 @@ jobs:
           fetch-depth: ${{ inputs.fetch-depth }}
           fetch-tags: true
 
-      - name: Fetch additional references
-        if: ${{ github.event_name == 'pull_request' }}
-        run: |
-          git fetch origin ${{ inputs.primary-branch }} --depth ${{ inputs.fetch-depth }}
-
-          # Allow fetch attempts for ${{ inputs.development-branch }} to fail
-          git fetch origin ${{ inputs.development-branch }} --depth ${{ inputs.fetch-depth }} || true
-
       # Mark the current working directory as a safe directory in git to
       # resolve "dubious ownership" complaints.
       #
@@ -125,6 +128,14 @@ jobs:
       - name: Mark the current working directory as a safe directory in git
         # run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
         run: git config --global --add safe.directory "${PWD}"
+
+      - name: Fetch additional references
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          git fetch origin ${{ inputs.primary-branch }} --depth ${{ inputs.fetch-depth }}
+
+          # Allow fetch attempts for ${{ inputs.development-branch }} to fail
+          git fetch origin ${{ inputs.development-branch }} --depth ${{ inputs.fetch-depth }} || true
 
       - name: Build packages
         run: make packages
