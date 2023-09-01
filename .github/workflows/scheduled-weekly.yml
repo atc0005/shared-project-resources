@@ -40,23 +40,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Check out code (subset)
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/checkout@v3.6.0
-        with:
-          # Retrieve sufficient amount of history (along with tags) to allow
-          # build tooling (e.g., go-winres, git-describe-semver) to processing
-          # tags as part of asset generation tasks.
-          fetch-depth: ${{ inputs.fetch-depth }}
-          fetch-tags: true
-
-      - name: Fetch additional references
-        if: ${{ github.event_name == 'pull_request' }}
-        run: |
-          git fetch origin ${{ inputs.primary-branch }} --depth ${{ inputs.fetch-depth }}
-
-          # Allow fetch attempts for ${{ inputs.development-branch }} to fail
-          git fetch origin ${{ inputs.development-branch }} --depth ${{ inputs.fetch-depth }} || true
       - name: Assert source branches are set
         run: |
           abort="false"
@@ -70,6 +53,20 @@ jobs:
 
           echo "Primary branch: ${{ format('{0}/{1}', inputs.default-repo, inputs.primary-branch) }}"
           echo "Development branch: ${{ format('{0}/{1}', inputs.default-repo, inputs.development-branch) }}"
+
+      - name: Check out code (subset)
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/checkout@v3.6.0
+        with:
+          fetch-depth: ${{ inputs.fetch-depth }}
+
+      - name: Fetch additional references
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          git fetch origin ${{ inputs.primary-branch }} --depth ${{ inputs.fetch-depth }}
+
+          # Allow fetch attempts for ${{ inputs.development-branch }} to fail
+          git fetch origin ${{ inputs.development-branch }} --depth ${{ inputs.fetch-depth }} || true
 
       - name: Assert PR branch is ahead of acceptable source branches
         if: ${{ github.event_name == 'pull_request' }}
