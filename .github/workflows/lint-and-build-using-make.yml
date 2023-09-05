@@ -60,7 +60,7 @@ jobs:
 
       - name: Check out code (subset)
         if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/checkout@v3.6.0
+        uses: actions/checkout@v4.0.0
         with:
           fetch-depth: ${{ inputs.fetch-depth }}
 
@@ -107,7 +107,7 @@ jobs:
         run: go version
 
       - name: Check out code into the Go module directory
-        uses: actions/checkout@v3.6.0
+        uses: actions/checkout@v4.0.0
 
       # Mark the current working directory as a safe directory in git to
       # resolve "dubious ownership" complaints.
@@ -162,7 +162,7 @@ jobs:
         run: go version
 
       - name: Check out code (subset)
-        uses: actions/checkout@v3.6.0
+        uses: actions/checkout@v4.0.0
 
       # Mark the current working directory as a safe directory in git to
       # resolve "dubious ownership" complaints.
@@ -209,7 +209,7 @@ jobs:
         run: go version
 
       - name: Check out code (subset)
-        uses: actions/checkout@v3.6.0
+        uses: actions/checkout@v4.0.0
         with:
           # Retrieve sufficient amount of history to allow build tooling
           # (e.g., go-winres, git-describe-semver) to process tags as part of
