@@ -23,7 +23,7 @@ on:
       fetch-depth:
         required: false
         type: number
-        default: 1
+        default: 50
 
 jobs:
   # https://stackoverflow.com/questions/76151411/use-github-actions-to-check-if-branch-is-up-to-date-with-main
