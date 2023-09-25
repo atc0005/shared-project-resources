@@ -69,7 +69,7 @@ jobs:
       # 3ab151278eb9c5925b43e42b3cbbf4e85141c18c and refs/tags/v0.36.0-alpha.3
       # to refs/tags/v0.36.0-alpha.3
       - name: Check out code
-        uses: actions/checkout@v4.0.0
+        uses: actions/checkout@v4.1.0
 
       # Mark the current working directory as a safe directory in git to
       # resolve "dubious ownership" complaints.
@@ -116,7 +116,7 @@ jobs:
       # 3ab151278eb9c5925b43e42b3cbbf4e85141c18c and refs/tags/v0.36.0-alpha.3
       # to refs/tags/v0.36.0-alpha.3
       - name: Check out code
-        uses: actions/checkout@v4.0.0
+        uses: actions/checkout@v4.1.0
 
       # Mark the current working directory as a safe directory in git to
       # resolve "dubious ownership" complaints.
