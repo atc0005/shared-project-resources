@@ -68,7 +68,7 @@ jobs:
 
       - name: Check out code (subset)
         if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/checkout@v4.0.0
+        uses: actions/checkout@v4.1.0
         with:
           fetch-depth: ${{ inputs.fetch-depth }}
 
