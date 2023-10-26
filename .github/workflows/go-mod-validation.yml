@@ -50,7 +50,7 @@ jobs:
 
       - name: Check out code (subset)
         if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/checkout@v4.1.0
+        uses: actions/checkout@v4.1.1
         with:
           fetch-depth: ${{ inputs.fetch-depth }}
 
@@ -91,7 +91,7 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v4.1.0
+        uses: actions/checkout@v4.1.1
 
       # Mark the current working directory as a safe directory in git to
       # resolve "dubious ownership" complaints.
@@ -119,7 +119,7 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v4.1.0
+        uses: actions/checkout@v4.1.1
 
       # Mark the current working directory as a safe directory in git to
       # resolve "dubious ownership" complaints.
