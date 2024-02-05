@@ -116,17 +116,20 @@ jobs:
 
       - name: Run orijtech/structslop
         run: |
-          echo "structslop version $(go version -m $(which structslop) | awk '$1 == "mod" { print $3 }')"
+          #echo "structslop version $(go version -m $(which structslop) | awk '$1 == "mod" { print $3 }')"
+          go version -m $(which structslop)
           structslop ./...
 
       - name: Run orijtech/tickeryzer
         run: |
-          echo "tickeryzer version $(go version -m $(which tickeryzer) | awk '$1 == "mod" { print $3 }')"
+          #echo "tickeryzer version $(go version -m $(which tickeryzer) | awk '$1 == "mod" { print $3 }')"
+          go version -m $(which tickeryzer)
           tickeryzer ./...
 
       - name: Run orijtech/httperroryzer
         run: |
-          echo "httperroryzer version $(go version -m $(which httperroryzer) | awk '$1 == "mod" { print $3 }')"
+          #echo "httperroryzer version $(go version -m $(which httperroryzer) | awk '$1 == "mod" { print $3 }')"
+          go version -m $(which httperroryzer)
           httperroryzer ./...
 
       - name: Run fatih/errwrap
