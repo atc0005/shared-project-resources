@@ -134,7 +134,8 @@ jobs:
 
       - name: Run fatih/errwrap
         run: |
-          echo "errwrap version $(go version -m $(which errwrap) | awk '$1 == "mod" { print $3 }')"
+          #echo "errwrap version $(go version -m $(which errwrap) | awk '$1 == "mod" { print $3 }')"
+          go version -m $(which errwrap)
           errwrap ./...
 
       # DISABLED until further review:
