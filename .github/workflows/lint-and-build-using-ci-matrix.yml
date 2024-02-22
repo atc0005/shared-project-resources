@@ -191,9 +191,10 @@ jobs:
     runs-on: ubuntu-latest
     # Default: 360 minutes
     timeout-minutes: 10
-    # Don't flag the whole workflow as failed if this job fails. Once this
-    # workflow job proves itself we can mark it as required.
-    continue-on-error: true
+    # Brief testing indicates the syntax of this job is correct and that the
+    # matches are not false-positives; we'll treat linting failures as real
+    # errors.
+    continue-on-error: false
     container:
       image: "ghcr.io/atc0005/go-ci:go-ci-mirror-build-go1.21"
 
