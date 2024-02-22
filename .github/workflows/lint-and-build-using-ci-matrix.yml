@@ -184,6 +184,43 @@ jobs:
       - name: Run all tests
         run: go test -mod=vendor -v ./...
 
+  # https://github.com/atc0005/shared-project-resources/issues/145
+  evaluate_loopvar_scoping_changes:
+    needs: assert_pr_branch_is_ahead_of_primary_branch
+    name: Evaluate loopvar scoping changes
+    runs-on: ubuntu-latest
+    # Default: 360 minutes
+    timeout-minutes: 10
+    # Don't flag the whole workflow as failed if this job fails. Once this
+    # workflow job proves itself we can mark it as required.
+    continue-on-error: true
+    container:
+      image: "ghcr.io/atc0005/go-ci:go-ci-mirror-build-go1.21"
+
+    steps:
+      - name: Print go version
+        run: go version
+
+      - name: Check out code
+        uses: actions/checkout@v4.1.1
+
+      # Mark the current working directory as a safe directory in git to
+      # resolve "dubious ownership" complaints.
+      #
+      # https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
+      # https://confluence.atlassian.com/bbkb/git-command-returns-fatal-error-about-the-repository-being-owned-by-someone-else-1167744132.html
+      # https://github.com/actions/runner-images/issues/6775
+      # https://github.com/actions/checkout/issues/766
+      - name: Mark the current working directory as a safe directory in git
+        # run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        run: git config --global --add safe.directory "${PWD}"
+
+      - name: Assert loopvar flag does not change loop compilation behavior
+        run: >-
+          ! go build -gcflags=all=-d=loopvar=2 $(go list -mod=vendor ./...) 2>&1
+          | grep -Ev 'vendor/|/usr'
+          | grep --quiet 'now per-iteration'
+
   build_code:
     needs: assert_pr_branch_is_ahead_of_primary_branch
     name: Build codebase
