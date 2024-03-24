@@ -123,8 +123,6 @@ jobs:
       # 3ab151278eb9c5925b43e42b3cbbf4e85141c18c and refs/tags/v0.36.0-alpha.3
       # to refs/tags/v0.36.0-alpha.3
       - name: Check out code
-        with:
-          fetch-tags: true
         uses: actions/checkout@v4.1.2
 
       # Mark the current working directory as a safe directory in git to
@@ -144,8 +142,9 @@ jobs:
         run: |
           git fetch origin ${{ inputs.primary-branch }} --depth ${{ inputs.fetch-depth }}
 
-          # Allow fetch attempts for ${{ inputs.development-branch }} to fail
-          git fetch origin ${{ inputs.development-branch }} --depth ${{ inputs.fetch-depth }} || true
+          # Allow fetch attempts for ${{ inputs.development-branch }} to fail.
+          # Also, explicitly fetch tags for later "previous tag" calculation.
+          git fetch origin ${{ inputs.development-branch }} --depth ${{ inputs.fetch-depth }} --tags || true
 
       - name: Use Podman to generate release build assets
         if: ${{ inputs.generate-assets }}
