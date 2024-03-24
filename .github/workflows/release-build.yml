@@ -138,13 +138,18 @@ jobs:
 
       # Additional references are needed for choffmeister/git-describe-semver
       # to successfully generate a release version based on git history.
-      - name: Fetch additional references
+      - name: Fetch additional references for development branch
+        if: contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta')
         run: |
-          git fetch origin ${{ inputs.primary-branch }} --depth ${{ inputs.fetch-depth }}
-
           # Allow fetch attempts for ${{ inputs.development-branch }} to fail.
           # Also, explicitly fetch tags for later "previous tag" calculation.
           git fetch origin ${{ inputs.development-branch }} --depth ${{ inputs.fetch-depth }} --tags || true
+
+      # Additional references are needed for choffmeister/git-describe-semver
+      # to successfully generate a release version based on git history.
+      - name: Fetch additional references for primary branch
+        run: |
+          git fetch origin ${{ inputs.primary-branch }} --depth ${{ inputs.fetch-depth }}
 
       - name: Use Podman to generate release build assets
         if: ${{ inputs.generate-assets }}
