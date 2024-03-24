@@ -93,9 +93,6 @@ jobs:
   lint:
     needs: assert_pr_branch_is_ahead_of_primary_branch
     name: Lint
-    with:
-      # Pass on any values specified by the importing workflow.
-      os-dependencies: ${{ inputs.os-dependencies }}
     uses: atc0005/shared-project-resources/.github/workflows/lint-project-files.yml@master
 
   vulnerability:
