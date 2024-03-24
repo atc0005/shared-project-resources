@@ -8,6 +8,9 @@
 on:
   workflow_call:
     inputs:
+      os-dependencies:
+        required: false
+        type: string
       generate-assets:
         required: false
         type: boolean
@@ -81,6 +84,10 @@ jobs:
       - name: Mark the current working directory as a safe directory in git
         # run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
         run: git config --global --add safe.directory "${PWD}"
+
+      - name: Install Ubuntu packages (custom set)
+        if: ${{ inputs.os-dependencies != '' }}
+        run: apt-get update && apt-get install -y --no-install-recommends ${{ inputs.os-dependencies }}
 
       - name: Run all tests
         run: go test -mod=vendor -v ./...
