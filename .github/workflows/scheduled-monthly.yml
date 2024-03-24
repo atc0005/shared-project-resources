@@ -102,6 +102,9 @@ jobs:
   lint_and_build_using_ci_matrix:
     needs: assert_pr_branch_is_ahead_of_primary_branch
     name: CI matrix
+    with:
+      # Pass on any values specified by the importing workflow.
+      os-dependencies: ${{ inputs.os-dependencies }}
     uses: atc0005/shared-project-resources/.github/workflows/lint-and-build-using-ci-matrix.yml@master
 
   lint_and_build_using_makefile:
@@ -145,6 +148,9 @@ jobs:
     needs: assert_pr_branch_is_ahead_of_primary_branch
     name: Build packages using container
     with:
+      # Pass on any values specified by the importing workflow.
+      os-dependencies: ${{ inputs.os-dependencies }}
+
       # TODO: Override this from the calling/importing workflow if the project
       # does not support generating release assets directly (e.g., library
       # project).
@@ -155,6 +161,9 @@ jobs:
     needs: assert_pr_branch_is_ahead_of_primary_branch
     name: Build release assets using container
     with:
+      # Pass on any values specified by the importing workflow.
+      os-dependencies: ${{ inputs.os-dependencies }}
+
       # TODO: Override this from the calling/importing workflow if the project
       # does not support generating release assets directly (e.g., library
       # project).

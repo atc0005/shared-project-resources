@@ -8,6 +8,9 @@
 on:
   workflow_call:
     inputs:
+      os-dependencies:
+        required: false
+        type: string
       default-repo:
         required: false
         type: string
@@ -117,6 +120,10 @@ jobs:
         # run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
         run: git config --global --add safe.directory "${PWD}"
 
+      - name: Install Ubuntu packages (custom set)
+        if: ${{ inputs.os-dependencies != '' }}
+        run: apt-get update && apt-get install -y --no-install-recommends ${{ inputs.os-dependencies }}
+
       - name: Remove repo-provided golangci-lint config file
         run: |
           # Remove the copy of the config file bundled with the repo/code so
@@ -143,6 +150,9 @@ jobs:
   optional_linting:
     needs: assert_pr_branch_is_ahead_of_primary_branch
     name: Optional Linting
+    with:
+      # Pass on any values specified by the importing workflow.
+      os-dependencies: ${{ inputs.os-dependencies }}
     uses: atc0005/shared-project-resources/.github/workflows/lint-using-optional-linters.yml@master
 
   test_code:
@@ -181,6 +191,10 @@ jobs:
         # run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
         run: git config --global --add safe.directory "${PWD}"
 
+      - name: Install Ubuntu packages (custom set)
+        if: ${{ inputs.os-dependencies != '' }}
+        run: apt-get update && apt-get install -y --no-install-recommends ${{ inputs.os-dependencies }}
+
       - name: Run all tests
         run: go test -mod=vendor -v ./...
 
@@ -215,6 +229,10 @@ jobs:
       - name: Mark the current working directory as a safe directory in git
         # run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
         run: git config --global --add safe.directory "${PWD}"
+
+      - name: Install Ubuntu packages (custom set)
+        if: ${{ inputs.os-dependencies != '' }}
+        run: apt-get update && apt-get install -y --no-install-recommends ${{ inputs.os-dependencies }}
 
       - name: Assert loopvar flag does not change loop compilation behavior
         run: >-
@@ -261,6 +279,10 @@ jobs:
       - name: Mark the current working directory as a safe directory in git
         # run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
         run: git config --global --add safe.directory "${PWD}"
+
+      - name: Install Ubuntu packages (custom set)
+        if: ${{ inputs.os-dependencies != '' }}
+        run: apt-get update && apt-get install -y --no-install-recommends ${{ inputs.os-dependencies }}
 
       - name: Build using vendored dependencies
         # NOTE: This will fail if there is a doc.go file in the project root

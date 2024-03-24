@@ -120,9 +120,14 @@ jobs:
         # run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
         run: git config --global --add safe.directory "${PWD}"
 
-      # bsdmainutils provides "column" which is used by the Makefile
-      - name: Install Ubuntu packages
-        run: apt-get update && apt-get install -y --no-install-recommends make gcc bsdmainutils
+      - name: Install Ubuntu packages (standard set)
+        if: ${{ inputs.os-dependencies == '' }}
+        # bsdmainutils provides "column" which is used by the Makefile
+        run: apt-get update && apt-get install -y --no-install-recommends make gcc bsdmainutils xz-utils
+
+      - name: Install Ubuntu packages (custom set)
+        if: ${{ inputs.os-dependencies != '' }}
+        run: apt-get update && apt-get install -y --no-install-recommends ${{ inputs.os-dependencies }}
 
       - name: Install Go linting tools
         run: make lintinstall
