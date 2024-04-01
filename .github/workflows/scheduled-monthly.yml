@@ -161,9 +161,6 @@ jobs:
     needs: assert_pr_branch_is_ahead_of_primary_branch
     name: Build release assets using container
     with:
-      # Pass on any values specified by the importing workflow.
-      os-dependencies: ${{ inputs.os-dependencies }}
-
       # TODO: Override this from the calling/importing workflow if the project
       # does not support generating release assets directly (e.g., library
       # project).
