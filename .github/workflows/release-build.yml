@@ -193,6 +193,7 @@ jobs:
             --prerelease \
             --target "${{ inputs.development-branch }}" \
             --discussion-category 'Dev/Release Candidate' \
+            --title "${{ github.ref_name }}" \
             --notes-file "${release_notes_markdown_file}" \
             $(if [ -d "release_assets" ]; then find release_assets/ -type f; fi)
 
@@ -210,6 +211,7 @@ jobs:
             --prerelease \
             --target "${{ inputs.primary-branch }}" \
             --discussion-category 'Dev/Release Candidate' \
+            --title "${{ github.ref_name }}" \
             --generate-notes \
             $(if [ -d "release_assets" ]; then find release_assets/ -type f; fi)
 
@@ -227,5 +229,6 @@ jobs:
             --latest \
             --target "${{ inputs.primary-branch }}" \
             --discussion-category 'Stable Release' \
+            --title "${{ github.ref_name }}" \
             --generate-notes \
             $(if [ -d "release_assets" ]; then find release_assets/ -type f; fi)
