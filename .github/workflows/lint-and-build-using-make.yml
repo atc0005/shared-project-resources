@@ -14,6 +14,9 @@ on:
       build-all:
         required: false
         type: boolean
+      enable-i386-architecture:
+        required: false
+        type: boolean
       lint-using-makefile:
         required: false
         type: boolean
@@ -239,6 +242,15 @@ jobs:
 
           # Allow fetch attempts for ${{ inputs.development-branch }} to fail
           git fetch origin ${{ inputs.development-branch }} --depth ${{ inputs.fetch-depth }} || true
+
+      - name: Enable i386 architecture to allow 32-bit package installation (optional)
+        if: ${{ inputs.enable-i386-architecture }}
+        continue-on-error: false
+        # https://unix.stackexchange.com/questions/12956/how-do-i-run-32-bit-programs-on-a-64-bit-debian-ubuntu
+        run: |
+          dpkg --add-architecture i386
+          dpkg --configure -a
+          apt-get update
 
       - name: Install Ubuntu packages (standard set)
         if: ${{ inputs.os-dependencies == '' }}
