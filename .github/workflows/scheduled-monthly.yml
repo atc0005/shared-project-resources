@@ -26,6 +26,14 @@ on:
         required: false
         type: boolean
         default: true
+      makefile-build-all:
+        required: false
+        type: boolean
+        default: true
+      makefile-enable-i386-architecture:
+        required: false
+        type: boolean
+        default: false
       default-repo:
         required: false
         type: string
@@ -140,8 +148,16 @@ jobs:
       lint-using-makefile: true
 
       # The `make all` recipe can be expensive, so we disable it by default
-      # and enable it here as part of a scheduled monthly job.
-      build-all: true
+      # and enable it here (by default) as part of a scheduled monthly job.
+      #
+      # We use a workflow input to allow toggling this off as needed by
+      # dependent projects.
+      build-all: ${{ inputs.makefile-build-all }}
+
+      # Some CGO-enabled projects require i386 packages to be installed if
+      # building x86 assets on a x64 OS. This is opt-in as most projects do
+      # not require this build option.
+      enable-i386-architecture: ${{ inputs.makefile-enable-i386-architecture }}
     uses: atc0005/shared-project-resources/.github/workflows/lint-and-build-using-make.yml@master
 
   build_packages_using_container:
