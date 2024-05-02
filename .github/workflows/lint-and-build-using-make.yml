@@ -11,6 +11,9 @@ on:
       os-dependencies:
         required: false
         type: string
+      makefile-all-os-dependencies:
+        required: false
+        type: string
       build-all:
         required: false
         type: boolean
@@ -252,14 +255,21 @@ jobs:
           dpkg --configure -a
           apt-get update
 
+      - name: Refresh Ubuntu packages lists
+        run: apt-get update
+
       - name: Install Ubuntu packages (standard set)
         if: ${{ inputs.os-dependencies == '' }}
         # bsdmainutils provides "column" which is used by the Makefile
-        run: apt-get update && apt-get install -y --no-install-recommends make gcc bsdmainutils xz-utils
+        run: apt-get install -y --no-install-recommends make gcc bsdmainutils xz-utils
 
       - name: Install Ubuntu packages (custom set)
         if: ${{ inputs.os-dependencies != '' }}
-        run: apt-get update && apt-get install -y --no-install-recommends ${{ inputs.os-dependencies }}
+        run: apt-get install -y --no-install-recommends ${{ inputs.os-dependencies }}
+
+      - name: Install Ubuntu packages (optional makefile all set)
+        if: ${{ inputs.makefile-all-os-dependencies != '' }}
+        run: apt-get install -y --no-install-recommends ${{ inputs.makefile-all-os-dependencies }}
 
       # Try to install build dependencies using the depsinstall Makefile
       # recipe but allow this step to fail without failing the whole job if
