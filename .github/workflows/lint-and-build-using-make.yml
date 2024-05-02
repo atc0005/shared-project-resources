@@ -253,7 +253,6 @@ jobs:
         run: |
           dpkg --add-architecture i386
           dpkg --configure -a
-          apt-get update
 
       - name: Refresh Ubuntu packages lists
         run: apt-get update
