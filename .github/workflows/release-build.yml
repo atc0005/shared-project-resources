@@ -55,7 +55,7 @@ jobs:
           - container-image: "go-ci-unstable"
             experimental: true
     container:
-      image: "ghcr.io/atc0005/go-ci:${{ matrix.container-image}}"
+      image: "ghcr.io/atc0005/go-ci:${{ matrix.container-image }}"
 
     steps:
       - name: Log tag info
