@@ -100,7 +100,7 @@ jobs:
         container-image: ["go-ci-oldstable", "go-ci-stable", "go-ci-unstable"]
         experimental: [true]
     container:
-      image: "ghcr.io/atc0005/go-ci:${{ matrix.container-image}}"
+      image: "ghcr.io/atc0005/go-ci:${{ matrix.container-image }}"
 
     steps:
       - name: Check out code
