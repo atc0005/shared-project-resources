@@ -95,6 +95,14 @@ jobs:
   release_build:
     name: Release build using Podman and Makefile
 
+    env:
+      # Set environment variable so that our Makefile can take advantage of
+      # that value instead of calculating the tag from scratch. This also
+      # helps with cases where the current commit has multiple tags associated
+      # with it (e.g., a final release tag created from a commit which also
+      # has the last release candidate tag).
+      REPO_VERSION: "${{ github.ref_name }}"
+
     # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
     permissions:
       contents: write
