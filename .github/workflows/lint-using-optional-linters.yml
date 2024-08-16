@@ -122,9 +122,6 @@ jobs:
         run: apt-get update && apt-get install -y --no-install-recommends ${{ inputs.os-dependencies }}
 
       - name: Run orijtech/structslop
-        # Not provided by unstable image
-        # https://github.com/atc0005/go-ci/pull/1586
-        if: ${{ matrix.container-image != 'go-ci-unstable' }}
         run: |
           echo 'matrix.container-image' value is ${{ matrix.container-image }}
           #echo "structslop version $(go version -m $(which structslop) | awk '$1 == "mod" { print $3 }')"
