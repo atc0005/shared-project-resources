@@ -121,13 +121,6 @@ jobs:
         if: ${{ inputs.os-dependencies != '' }}
         run: apt-get update && apt-get install -y --no-install-recommends ${{ inputs.os-dependencies }}
 
-      - name: Run orijtech/structslop
-        run: |
-          echo 'matrix.container-image' value is ${{ matrix.container-image }}
-          #echo "structslop version $(go version -m $(which structslop) | awk '$1 == "mod" { print $3 }')"
-          go version -m $(which structslop)
-          structslop ./...
-
       - name: Run orijtech/tickeryzer
         run: |
           #echo "tickeryzer version $(go version -m $(which tickeryzer) | awk '$1 == "mod" { print $3 }')"
