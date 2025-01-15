@@ -140,19 +140,6 @@ jobs:
           go version -m $(which httperroryzer)
           httperroryzer ./...
 
-      # DISABLED until reported issues are resolved
-      #
-      # See also:
-      #
-      # - https://github.com/atc0005/shared-project-resources/issues/217
-      # - https://github.com/fatih/errwrap/issues/21
-      #
-      # - name: Run fatih/errwrap
-      #   run: |
-      #     #echo "errwrap version $(go version -m $(which errwrap) | awk '$1 == "mod" { print $3 }')"
-      #     go version -m $(which errwrap)
-      #     errwrap ./...
-
       # DISABLED until further review:
       #
       #   - linting suggestions do not seem to apply
