@@ -15,6 +15,10 @@ on:
         required: false
         type: boolean
         default: true
+      create-discussion:
+        required: false
+        type: boolean
+        default: true
       default-repo:
         required: false
         type: string
@@ -196,14 +200,26 @@ jobs:
           sed -i -e 's/###/\n###/g' -e 's/\(###.*\)/\1\n/g' "${release_notes_markdown_file}"
 
           echo "Generating release using previously generated release notes"
-          gh release create ${{ github.ref_name }} \
-            --verify-tag \
-            --prerelease \
-            --target "${{ inputs.development-branch }}" \
-            --discussion-category 'Dev/Release Candidate' \
-            --title "${{ github.ref_name }}" \
-            --notes-file "${release_notes_markdown_file}" \
-            $(if [ -d "release_assets" ]; then find release_assets/ -type f; fi)
+          if [[ ${{ inputs.create-discussion }} == "true" ]]; then
+            echo "Calling workflow did not disable discussions; creating new release discussion ..."
+            gh release create ${{ github.ref_name }} \
+              --verify-tag \
+              --prerelease \
+              --target "${{ inputs.development-branch }}" \
+              --discussion-category 'Dev/Release Candidate' \
+              --title "${{ github.ref_name }}" \
+              --notes-file "${release_notes_markdown_file}" \
+              $(if [ -d "release_assets" ]; then find release_assets/ -type f; fi)
+          else
+            echo "Calling workflow disabled discussions; skipping creation of new release discussion ..."
+            gh release create ${{ github.ref_name }} \
+              --verify-tag \
+              --prerelease \
+              --target "${{ inputs.development-branch }}" \
+              --title "${{ github.ref_name }}" \
+              --notes-file "${release_notes_markdown_file}" \
+              $(if [ -d "release_assets" ]; then find release_assets/ -type f; fi)
+          fi
 
       # Releases for "rc" tags are associated with the primary branch where
       # stable releases are sourced.
@@ -212,16 +228,27 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: contains(github.ref_name, 'rc')
         run: |
-          echo Generating rc pre-release
-
-          gh release create ${{ github.ref_name }} \
-            --verify-tag \
-            --prerelease \
-            --target "${{ inputs.primary-branch }}" \
-            --discussion-category 'Dev/Release Candidate' \
-            --title "${{ github.ref_name }}" \
-            --generate-notes \
-            $(if [ -d "release_assets" ]; then find release_assets/ -type f; fi)
+          echo "Generating rc pre-release"
+          if [[ ${{ inputs.create-discussion }} == "true" ]]; then
+            echo "Calling workflow did not disable discussions; creating new release discussion ..."
+            gh release create ${{ github.ref_name }} \
+              --verify-tag \
+              --prerelease \
+              --target "${{ inputs.primary-branch }}" \
+              --discussion-category 'Dev/Release Candidate' \
+              --title "${{ github.ref_name }}" \
+              --generate-notes \
+              $(if [ -d "release_assets" ]; then find release_assets/ -type f; fi)
+          else
+            echo "Calling workflow disabled discussions; skipping creation of new release discussion ..."
+            gh release create ${{ github.ref_name }} \
+              --verify-tag \
+              --prerelease \
+              --target "${{ inputs.primary-branch }}" \
+              --title "${{ github.ref_name }}" \
+              --generate-notes \
+              $(if [ -d "release_assets" ]; then find release_assets/ -type f; fi)
+          fi
 
       - name: Generate stable release
         env:
@@ -230,13 +257,24 @@ jobs:
         # https://github.com/orgs/community/discussions/26712
         if: ${{ !(contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'rc')) }}
         run: |
-          echo Generating stable release
-
-          gh release create ${{ github.ref_name }} \
-            --verify-tag \
-            --latest \
-            --target "${{ inputs.primary-branch }}" \
-            --discussion-category 'Stable Release' \
-            --title "${{ github.ref_name }}" \
-            --generate-notes \
-            $(if [ -d "release_assets" ]; then find release_assets/ -type f; fi)
+          echo "Generating stable release"
+          if [[ ${{ inputs.create-discussion }} == "true" ]]; then
+            echo "Calling workflow did not disable discussions; creating new release discussion ..."
+            gh release create ${{ github.ref_name }} \
+              --verify-tag \
+              --latest \
+              --target "${{ inputs.primary-branch }}" \
+              --discussion-category 'Stable Release' \
+              --title "${{ github.ref_name }}" \
+              --generate-notes \
+              $(if [ -d "release_assets" ]; then find release_assets/ -type f; fi)
+          else
+            echo "Calling workflow disabled discussions; skipping creation of new release discussion ..."
+            gh release create ${{ github.ref_name }} \
+              --verify-tag \
+              --latest \
+              --target "${{ inputs.primary-branch }}" \
+              --title "${{ github.ref_name }}" \
+              --generate-notes \
+              $(if [ -d "release_assets" ]; then find release_assets/ -type f; fi)
+          fi
