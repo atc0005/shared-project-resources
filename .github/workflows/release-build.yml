@@ -138,8 +138,18 @@ jobs:
       # Error: fatal: Cannot fetch both
       # 3ab151278eb9c5925b43e42b3cbbf4e85141c18c and refs/tags/v0.36.0-alpha.3
       # to refs/tags/v0.36.0-alpha.3
-      - name: Check out code
+      #
+      # - name: Check out code
+      #   uses: actions/checkout@v5.0.0
+
+      - name: Check out code (subset)
         uses: actions/checkout@v5.0.0
+        with:
+          # Retrieve sufficient amount of history (along with tags) to allow
+          # build tooling (e.g., go-winres, git-describe-semver) to process
+          # tags as part of asset generation tasks.
+          fetch-depth: ${{ inputs.fetch-depth }}
+          fetch-tags: true
 
       # Mark the current working directory as a safe directory in git to
       # resolve "dubious ownership" complaints.
