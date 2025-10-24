@@ -191,8 +191,15 @@ jobs:
           git show
 
           echo "Calculating previous pre-release tag for use with API request"
-          #previous_tag=$(git tag -l | grep -E 'alpha|beta' | sort -V | tail -n 2 | head -n 1)
-          previous_tag=$(git tag --sort=-v:refname | grep -E 'alpha|beta' | head -n 2 | tail -n 1)
+          current_tag=$(git describe --tags --abbrev=0)
+          echo "current_tag is ${current_tag}"
+
+          echo "Retrieving the commit just before the current tag"
+          previous_commit=$(git rev-list -n 1 "$current_tag"^)
+          echo "previous_commit is ${previous_commit}"
+
+          echo "Retrieving the previous tag using commit just before the current tag"
+          previous_tag=$(git describe --tags --abbrev=0 "$previous_commit")
           echo "previous_tag is ${previous_tag}"
 
           echo "Setting path for generated release notes"
