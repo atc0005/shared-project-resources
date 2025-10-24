@@ -157,9 +157,12 @@ jobs:
       - name: Fetch additional references for development branch
         if: contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta')
         run: |
-          # Allow fetch attempts for ${{ inputs.development-branch }} to fail.
-          # Also, explicitly fetch tags for later "previous tag" calculation.
-          git fetch origin ${{ inputs.development-branch }} --depth ${{ inputs.fetch-depth }} --tags || true
+          # Explicitly fetch tags for later "previous tag" calculation.
+          #
+          # Use `--force` flag to work around Git 2.50+ behavior of not
+          # downloading tags reachable from fetched commits by explicitly
+          # asking for them.
+          git fetch origin ${{ inputs.development-branch }} --depth ${{ inputs.fetch-depth }} --tags --force
 
       # Additional references are needed for choffmeister/git-describe-semver
       # to successfully generate a release version based on git history.
