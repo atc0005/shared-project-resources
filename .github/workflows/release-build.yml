@@ -160,7 +160,7 @@ jobs:
           # Explicitly fetch tags for later "previous tag" calculation.
           #
           # Use `--force` flag to work around Git 2.50+ behavior of not
-          # downloading tags reachable from fetched commits by explicitly
+          # downloading tags unreachable from fetched commits by explicitly
           # asking for them.
           git fetch origin ${{ inputs.development-branch }} --depth ${{ inputs.fetch-depth }} --tags --force
 
