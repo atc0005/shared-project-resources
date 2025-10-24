@@ -121,6 +121,10 @@ jobs:
     timeout-minutes: 45
 
     steps:
+      - name: Log git version
+        run: |
+          git --version
+
       - name: Log tag info
         run: |
           echo "Ref type: ${{ github.ref_type }}"
@@ -177,8 +181,18 @@ jobs:
         run: |
           echo "Generating dev pre-release for ${{ github.ref_name }}"
 
+          echo "Listing all tags"
+          git tag --sort=-v:refname
+
+          echo "Listing branches"
+          git branch
+
+          echo "Listing current commit details"
+          git show
+
           echo "Calculating previous pre-release tag for use with API request"
-          previous_tag=$(git tag -l | grep -E 'alpha|beta' | sort -V | tail -n 2 | head -n 1)
+          #previous_tag=$(git tag -l | grep -E 'alpha|beta' | sort -V | tail -n 2 | head -n 1)
+          previous_tag=$(git tag --sort=-v:refname | grep -E 'alpha|beta' | head -n 2 | tail -n 1)
           echo "previous_tag is ${previous_tag}"
 
           echo "Setting path for generated release notes"
